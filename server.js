@@ -1,14 +1,25 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const path = require('path');
+
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost/resume-viewer', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://127.0.0.1/resume-viewer', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express();
 
+// Allow cross-origin requests
+app.use(cors());
+
 // Middleware to parse JSON requests
 app.use(bodyParser.json());
+
+
+// Route to serve PDF files
+app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
+
 
 // Define the Resume Schema
 const resumeSchema = new mongoose.Schema({
