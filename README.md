@@ -1,5 +1,5 @@
 # Resume-Viewer
-Resume Viewer for Purdue Data Mine Program
+Resume Viewer for Purdue Data Mine Program. Built using React, Express.js, and MongoDB.
 
 ## Prerequisites
 
