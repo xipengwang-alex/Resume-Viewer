@@ -1,0 +1,57 @@
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+input[type="file"],
+input[type="text"],
+input[type="number"],
+button {
+    margin: 5px 0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005f5f;
+}
+
+
+.sidebar {
+    float: left;
+    width: 200px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    height: 100vh;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #333;
+}
+
+.content {
+    margin-left: 200px;
+    padding: 20px;
+}
