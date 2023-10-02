@@ -41,7 +41,7 @@ const resumeSchema = new mongoose.Schema({
     'first name': String,
     'last name': String,
     gender: String,
-    year: Number,
+    year: String,
     gpa: Number,
     major: String
   },
