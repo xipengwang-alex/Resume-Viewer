@@ -1,9 +1,21 @@
 const express = require('express');
 const cors = require('cors');
+const multer = require('multer');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, 'resumes/')
+  },
+  filename: function(req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+
+
+const upload = multer({ storage: storage });
 
 // Connect to MongoDB
 mongoose.connect('mongodb://127.0.0.1/resume-viewer', { useNewUrlParser: true, useUnifiedTopology: true });
@@ -26,6 +38,8 @@ const resumeSchema = new mongoose.Schema({
   fileName: String,
   filePath: String,
   tags: {
+    'first name': String,
+    'last name': String,
     gender: String,
     year: Number,
     gpa: Number,
@@ -46,4 +60,24 @@ app.get('/resumes', async (req, res) => {
 // Start the server
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000');
+});
+
+app.post('/upload', upload.single('file'), async (req, res) => {
+  try {
+    const file = req.file;
+    const tags = JSON.parse(req.body.tags);
+    
+    const resume = new Resume({
+      fileName: file.originalname,
+      filePath: `/resumes/${file.originalname}`,
+      tags,
+    });
+    
+    await resume.save();
+    
+    res.json({ message: 'File uploaded successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
