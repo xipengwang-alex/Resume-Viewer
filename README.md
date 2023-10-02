@@ -1,2 +1,59 @@
 # Resume-Viewer
 Resume Viewer for Purdue Data Mine Program
+
+## Prerequisites
+
+- Node.js (v18.12.1 or later)
+- npm (v8.19.2 or later)
+- A MongoDB instance running locally or accessible over the network
+
+## Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/xipengwang-alex/Resume-Viewer.git
+   cd Resume-Viewer
+   ```
+
+2. **Install Backend Dependencies:**
+   Run the following command to install dependencies for backend:
+   ```bash
+   npm install
+   ```
+
+3. **Install Frontend Dependencies:**
+   Navigate to the client directory of your project and run the following command to install dependencies for frontend:
+   ```bash
+   cd client
+   npm install
+   ```
+
+4. **Start MongoDB:**
+   Make sure your MongoDB instance is running. If you are running MongoDB locally, use the following command:
+   ```bash
+   cd ../
+   mongod --dbpath=./data
+   ```
+
+5. **Start the Backend Server:**
+   In the resume-viewer directory, run the following command:
+   ```bash
+   node server.js
+   ```
+
+6. **Start the Frontend Server:**
+   In the client directory, run the following command:
+   ```bash
+   cd client
+   npm start
+   ```
+
+## Usage
+
+Once both the backend and frontend servers are running, navigate to [http://localhost:3001](http://localhost:3001) in your web browser to access the application.
+
+## Additional Information
+
+- The backend server will be running on [http://localhost:3000](http://localhost:3000)
+- The frontend server will proxy requests to the backend, so you can make API requests from the frontend to `/api/*` and they will be forwarded to the backend server.
+```
