@@ -14,17 +14,21 @@ function Upload() {
     setTags(prevTags => ({ ...prevTags, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('tags', JSON.stringify(tags));
-
-    await axios.post('http://localhost:3000/upload', formData);
-
-    // Optionally, refresh the list of resumes after uploading
-    window.location.reload();
+  const handleSubmit = async (e) => {    
+    try {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('tags', JSON.stringify(tags));
+        
+        await axios.post('http://localhost:3000/upload', formData);
+        
+        window.location.reload();
+    } catch (error) {
+        console.error(error);
+        alert('An error occurred while uploading the file.');
+    }
   };
 
   return (
