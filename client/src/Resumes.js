@@ -21,12 +21,14 @@ function Resumes() {
       {resumes.map(resume => (
         <div key={resume._id}>
           <button onClick={() => openResume(`http://localhost:3000${resume.filePath}`)}>
-            {resume.fileName}
+          {resume.tags["first name"]} {resume.tags["last name"]}
           </button>
         </div>
       ))}
     </div>
   );
+
+
 
 }
 
