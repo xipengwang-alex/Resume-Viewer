@@ -1,5 +1,5 @@
 # Resume-Viewer
-Resume Viewer for Purdue Data Mine Program
+Resume Viewer for Purdue Data Mine Program. Built using React, Express.js, and MongoDB.
 
 ## Prerequisites
 
@@ -36,15 +36,14 @@ Resume Viewer for Purdue Data Mine Program
    ```
 
 5. **Start the Backend Server:**
-   In the resume-viewer directory, run the following command:
+   Open a new terminal and navigate to the Resume-Viewer directory, run the following command:
    ```bash
    node server.js
    ```
 
 6. **Start the Frontend Server:**
-   In the client directory, run the following command:
+   Open another terminal and navigate to the Resume-Viewer/client directory, run the following command:
    ```bash
-   cd client
    npm start
    ```
 
@@ -56,4 +55,3 @@ Once both the backend and frontend servers are running, navigate to [http://loca
 
 - The backend server will be running on [http://localhost:3000](http://localhost:3000)
 - The frontend server will proxy requests to the backend, so you can make API requests from the frontend to `/api/*` and they will be forwarded to the backend server.
-```
