@@ -16,9 +16,16 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage: storage });
+const uri = "mongodb+srv://wangx:a2UKOohXAiXd05iC@us-east-serverlessinsta.cnthoht.mongodb.net/resume_viewer?retryWrites=true&w=majority&appName=US-East-ServerlessInstance";
 
-// Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1/resume-viewer', { useNewUrlParser: true, useUnifiedTopology: true });
+
+try {
+  // Connect to MongoDB
+  mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  console.log(" Mongoose is connected")
+} catch (e) {
+  console.log("could not connect");
+}
 
 const app = express();
 
@@ -33,8 +40,8 @@ app.use(bodyParser.json());
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
 
-// Define the Resume Schema
-const resumeSchema = new mongoose.Schema({
+// Define the StudentProfile Schema
+const StudentProfileSchema = new mongoose.Schema({
   fileName: String,
   filePath: String,
   tags: {
@@ -48,8 +55,8 @@ const resumeSchema = new mongoose.Schema({
   uploadedAt: { type: Date, default: Date.now }
 });
 
-// Define the Resume Model
-const Resume = mongoose.model('Resume', resumeSchema);
+// Define the StudentProfile/Resume Model
+const Resume = mongoose.model('student_profiles', StudentProfileSchema);
 
 // Define routes
 app.get('/resumes', async (req, res) => {

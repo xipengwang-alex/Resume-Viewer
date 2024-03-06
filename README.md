@@ -28,12 +28,9 @@ Resume Viewer for Purdue Data Mine Program. Built using React, Express.js, and M
    npm install
    ```
 
-4. **Start MongoDB:**
-   Make sure your MongoDB instance is running. If you are running MongoDB locally, use the following command:
-   ```bash
-   cd ../
-   mongod --dbpath=./data
-   ```
+4. **(Optional) Start MongoDB:**
+   Make sure your MongoDB instance is running.
+   
 
 5. **Start the Backend Server:**
    Open a new terminal and navigate to the Resume-Viewer directory, run the following command:
