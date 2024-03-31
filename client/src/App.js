@@ -5,7 +5,6 @@ import UploadPage from './UploadPage';
 import ResumesPage from './ResumesPage';
 import SetupWizard from './SetupWizard';
 import BasicLayout from './BasicLayout';
-import EditProfile from './EditProfile';
 import './styles.css';
 
 
@@ -17,7 +16,6 @@ function App() {
                 <Route path="/" element={<WithTopBarLayout />}>
                     <Route path="/upload" element={<UploadPage />} />
                     <Route path="/resumes" element={<ResumesPage />} />
-                    <Route path="/edit" element={<EditProfile />} />
                 </Route>
                 
                 {/* Route without the top bar */}
@@ -37,7 +35,6 @@ function WithTopBarLayout() {
                     <li><Link to="/upload">Upload Resume</Link></li>
                     <li><Link to="/resumes">View Resumes</Link></li>
                     <li><Link to="/setup">Setup Wizard</Link></li>
-                    <li><Link to="/edit">Edit Profile</Link></li>
                 </ul>
             </nav>
             <div className="content">

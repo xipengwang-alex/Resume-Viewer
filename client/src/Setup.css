@@ -43,6 +43,9 @@
     font-size: 36px; /* Smaller font size */
   }
   
+
+
+
   .exams-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr); /* Create six columns */
@@ -56,10 +59,46 @@
     align-items: center; /* Align the checkbox and label vertically */
   }
   
-  .exam-checkbox input[type="checkbox"] {
-    margin-right: 5px; /* Space between the checkbox and the label */
+  .exam-checkbox label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
   }
   
+  .exam-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+  }
+
+  .exam-checkbox input[type="checkbox"]:checked {
+    background-color: #DAAA00;
+    border-color: #DAAA00;
+  }
+
+  .exam-checkbox input[type="checkbox"]:checked::before {
+    content: '\2714';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .exam-checkbox .exam-label {
+    color: #666;
+  }
+  
+  .exam-checkbox input[type="checkbox"]:checked + .exam-label {
+    color: #000;
+  }
+
+
   .questions {
     display: flex;
     flex-direction: column;
@@ -79,3 +118,39 @@
     margin: 0; /* Removes default margin from paragraph tags */
   }
   
+  .resume-upload {
+    margin-bottom: 20px;
+  }
+  
+  .resume-upload-label {
+    display: block;
+    cursor: pointer;
+  }
+  
+  .resume-upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s ease;
+  }
+  .resume-upload-area h1 {
+      color: #333;
+      font-size: 18px;
+      margin-bottom: 10px;
+  }
+  
+  .resume-upload-area:hover {
+    background-color: #eee;
+  }
+  
+  .resume-upload-area input[type="file"] {
+    display: none;
+  }
+
+  .selected-file-name {
+    font-weight: bold;
+    color: #333;
+  }

@@ -1,15 +1,15 @@
 import React from 'react';
+import SetupHeader from './SetupHeader';
 
-function Setup3({ formData, setFormData }) {
+function Setup3({ formData, setFormData, header = 1, className }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   return (
-    <div className="content">
-      <h1>Your Resume Book Profile</h1>
-      <h3>Please provide the following information to show to recruiters:</h3>
+    <div className={`content ${className}`}>
+      {header === 1 && <SetupHeader />}
       <div className="questions">
         {/* Question 1 */}
         <div className="question">
