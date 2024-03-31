@@ -15,6 +15,16 @@ body {
     align-items: flex-start; /* Align children to the start of the cross axis */
 }
 
+.upload-page-content {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0px;
+    text-align: center;
+    justify-content: center; /* Center children horizontally */
+    align-items: flex-start; /* Align children to the start of the cross axis */
+  }
+
 h1 {
     color: #333;
     font-size: 24px;

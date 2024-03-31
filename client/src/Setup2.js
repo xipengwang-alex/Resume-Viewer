@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SetupHeader from './SetupHeader';
 
 export const exams = [
     { id: "p", label: "P" }, 
@@ -20,7 +21,10 @@ export const exams = [
   ];
   
 
-function Setup2({ formData, setFormData }) {
+function Setup2({ formData, setFormData, header = 1, className }) {
+
+  const [selectedFile, setSelectedFile] = useState(null);
+  
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
@@ -29,13 +33,14 @@ function Setup2({ formData, setFormData }) {
 
   const handleFileChange = (e) => {
     // Assuming you want to store only the file name in formData
+    const file = e.target.files[0];
+    setSelectedFile(file);
     setFormData({ ...formData, resume: e.target.files[0].name });
   };
 
   return (
-    <div className="content">
-      <h1>Your Resume Book</h1>
-      <h3>Please provide the following information to show to recruiters:</h3>
+    <div className={`content ${className}`}>
+      {header === 1 && <SetupHeader />}
       <form className="form-container">
         <div className="input-group">
           <div className="input-container">
@@ -43,7 +48,6 @@ function Setup2({ formData, setFormData }) {
             <label htmlFor="firstName">First Name:</label>
             <input 
                 type="text" 
-                id="firstName" 
                 name="firstName" 
                 value={formData.firstName || ""} 
                 onChange={handleChange} 
@@ -55,7 +59,6 @@ function Setup2({ formData, setFormData }) {
             <label htmlFor="lastName">Last Name:</label>
             <input 
                 type="text" 
-                id="lastName" 
                 name="lastName" 
                 value={formData.lastName || ""} 
                 onChange={handleChange} 
@@ -67,7 +70,6 @@ function Setup2({ formData, setFormData }) {
           <div className="input-container">
             <label htmlFor="graduation">Expected Graduation:</label>
             <select 
-                id="graduation" 
                 name="graduation" 
                 value={formData.graduation || ""} 
                 onChange={handleChange} 
@@ -85,7 +87,6 @@ function Setup2({ formData, setFormData }) {
             
             <label htmlFor="major">Major:</label>
             <select 
-                id="major" 
                 name="major" 
                 value={formData.major || ""} 
                 onChange={handleChange} 
@@ -100,31 +101,47 @@ function Setup2({ formData, setFormData }) {
           </div>
         </div>
 
-        <label htmlFor="skills">Passed Exams</label>
+        <label htmlFor="skills">Passed Exams:</label>
         <div className="exams-grid">
-            {exams.map(exam => (
-                <div key={exam.id} className="exam-checkbox">
+          {exams.map(exam => (
+            <div key={exam.id} className="exam-checkbox">
+              <label>
                 <input 
-                    type="checkbox" 
-                    id={exam.id} 
-                    name={exam.id} 
-                    checked={formData[exam.id] || false} 
-                    onChange={handleChange} 
+                  type="checkbox" 
+                  name={exam.id} 
+                  checked={formData[exam.id] || false} 
+                  onChange={handleChange} 
                 />
-                <label htmlFor={exam.id}>{exam.label}</label>
-                </div>
-            ))}
+                <span className="exam-label">{exam.label}</span>
+              </label>
+            </div>
+          ))}
         </div>
 
-        <label htmlFor="resume">Upload Resume:</label>
-        <input 
-          type="file" 
-          id="resume" 
-          name="resume" 
-          accept=".pdf,.doc,.docx" 
-          onChange={handleFileChange} 
-          required
-        />
+       <br/>
+
+        <div className="resume-upload">
+          <label htmlFor="resume" className="resume-upload-label">
+            <div className="resume-upload-area">
+              {selectedFile ? (
+                <p className="selected-file-name">Selected file: {selectedFile.name}</p>
+              ) : (
+                <>
+                  <h1>Upload a new resume from device</h1>
+                  <p>or drag and drop resume</p>
+                </>
+              )}
+              <input
+                type="file"
+                name="resume"
+                id="resume"
+                accept=".pdf,.doc,.docx"
+                onChange={handleFileChange}
+                required
+              />
+            </div>
+          </label>
+        </div>
 
       </form>
     </div>
