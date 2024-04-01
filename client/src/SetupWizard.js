@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import SetupProgressBar from './SetupProgressBar';
 import Setup1 from './Setup1';
 import Setup2 from './Setup2';
@@ -31,9 +30,10 @@ function SetupWizard() {
   };
 
   const handleEditProfile = () => {
-    navigate('/edit');
+    navigate('/upload');
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleSubmit = async () => {
     // Submit your final form data to the server
   };
@@ -47,7 +47,7 @@ function SetupWizard() {
       {currentStep === 4 && <Setup4 formData={formData} setFormData={setFormData} />}
       {/* ... other conditional steps if any ... */}
       
-      <div className="navigation-container">
+      <div className="navigation-container setup">
         {currentStep > 1 && currentStep < totalSteps && (
           <button className="button black" onClick={prevStep}>Back</button>
         )}

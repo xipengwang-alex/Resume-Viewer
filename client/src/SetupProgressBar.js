@@ -1,7 +1,7 @@
 import React from 'react';
 
 function SetupProgressBar({ currentStep, totalSteps }) {
-  const percentage = ((currentStep - 1) / (totalSteps - 1)) * 100 +1;
+  const percentage = Math.min(((currentStep - 1) / (totalSteps - 1)) * 100 + 25, 100);
 
   return (
     <div className="progress-bar-container">

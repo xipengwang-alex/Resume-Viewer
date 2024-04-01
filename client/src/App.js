@@ -32,7 +32,7 @@ function WithTopBarLayout() {
         <div className="App">
             <nav className="topbar">
                 <ul>
-                    <li><Link to="/upload">Upload Resume</Link></li>
+                    <li><Link to="/upload">Edit Profile</Link></li>
                     <li><Link to="/resumes">View Resumes</Link></li>
                     <li><Link to="/setup">Setup Wizard</Link></li>
                 </ul>
