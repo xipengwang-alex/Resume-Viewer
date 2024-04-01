@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Outlet } from 'react-router-dom';
-import UploadPage from './UploadPage';
-import ResumesPage from './ResumesPage';
-import SetupWizard from './SetupWizard';
+import UploadPage from './components/UploadPage';
+import ResumesPage from './components/ResumesPage';
+import SetupWizard from './components/SetupWizard';
 import BasicLayout from './BasicLayout';
 import './styles.css';
 
