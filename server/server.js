@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const storage = multer.diskStorage({
@@ -15,76 +14,82 @@ const storage = multer.diskStorage({
 });
 
 
+
 const upload = multer({ storage: storage });
 const uri = "mongodb+srv://wangx:a2UKOohXAiXd05iC@us-east-serverlessinsta.cnthoht.mongodb.net/resume_viewer?retryWrites=true&w=majority&appName=US-East-ServerlessInstance";
 
+const loginRoutes = require('./routes/loginRoutes');
+const registrationRoutes = require('./routes/registrationRoutes');
+const StudentProfile = require('./models/StudentProfile');
+const User = require('./models/User');
 
-try {
-  // Connect to MongoDB
-  mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-  console.log(" Mongoose is connected")
-} catch (e) {
-  console.log("could not connect");
-}
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Mongoose is connected"))
+  .catch(e => console.log("could not connect", e));
+
+
+
 
 const app = express();
-
-// Allow cross-origin requests
 app.use(cors());
-
-// Middleware to parse JSON requests
-app.use(bodyParser.json());
+app.use(express.json());
 
 
-// Route to serve PDF files
+
+app.use('/login', loginRoutes);
+app.use('/register', registrationRoutes);
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
-
-// Define the StudentProfile Schema
-const StudentProfileSchema = new mongoose.Schema({
-  fileName: String,
-  filePath: String,
-  tags: {
-    'first name': String,
-    'last name': String,
-    gender: String,
-    year: String,
-    gpa: Number,
-    major: String
-  },
-  uploadedAt: { type: Date, default: Date.now }
-});
-
-// Define the StudentProfile/Resume Model
-const Resume = mongoose.model('student_profiles', StudentProfileSchema);
-
-// Define routes
 app.get('/resumes', async (req, res) => {
-  const resumes = await Resume.find();
-  res.json(resumes);
+  const profiles = await StudentProfile.find();
+  res.json(profiles);
 });
 
-// Start the server
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
-});
 
-app.post('/upload', upload.single('file'), async (req, res) => {
+
+app.post('/resumes', upload.single('resume'), async (req, res) => {
   try {
-    const file = req.file;
-    const tags = JSON.parse(req.body.tags);
+    const { firstName, lastName, gender, year, gpa, graduation, major, willNeedSponsorship, sponsorshipTimeframe, opportunityType, pastInternships, examsPassed } = req.body;
+    const resume = req.file;
+
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
     
-    const resume = new Resume({
-      fileName: file.originalname,
-      filePath: `/resumes/${file.originalname}`,
-      tags,
+    const newProfile = new StudentProfile({
+      user: user._id,
+      firstName,
+      lastName,
+      gender,
+      year,
+      gpa,
+      graduation,
+      major,
+      willNeedSponsorship,
+      sponsorshipTimeframe,
+      opportunityType,
+      pastInternships,
+      examsPassed,
+      resume: {
+        fileName: resume.originalname,
+        filePath: `/resumes/${resume.originalname}`,
+      },
     });
-    
-    await resume.save();
-    
-    res.json({ message: 'File uploaded successfully' });
+
+    await newProfile.save();
+
+    res.json({ message: 'Profile created successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+
+
+
+app.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
 });

@@ -78,6 +78,7 @@ form {
   
 input[type="file"],
 input[type="text"],
+input[type="password"],
 input[type="number"],
 select, 
 button {

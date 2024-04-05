@@ -4,6 +4,8 @@ import { Outlet } from 'react-router-dom';
 import UploadPage from './components/UploadPage';
 import ResumesPage from './components/ResumesPage';
 import SetupWizard from './components/SetupWizard';
+import LoginPage from './components/LoginPage';
+import RegistrationPage from './components/RegistrationPage';
 import BasicLayout from './BasicLayout';
 import './styles.css';
 
@@ -16,6 +18,8 @@ function App() {
                 <Route path="/" element={<WithTopBarLayout />}>
                     <Route path="/upload" element={<UploadPage />} />
                     <Route path="/resumes" element={<ResumesPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegistrationPage />} />
                 </Route>
                 
                 {/* Route without the top bar */}
@@ -35,6 +39,8 @@ function WithTopBarLayout() {
                     <li><Link to="/upload">Edit Profile</Link></li>
                     <li><Link to="/resumes">View Resumes</Link></li>
                     <li><Link to="/setup">Setup Wizard</Link></li>
+                    <li><Link to="/login">Login</Link></li>
+                    <li><Link to="/register">Register</Link></li>
                 </ul>
             </nav>
             <div className="content">

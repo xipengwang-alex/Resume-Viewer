@@ -6,6 +6,7 @@ import Setup2 from './Setup2';
 import Setup3 from './Setup3';
 import Setup4 from './Setup4';
 import './Setup.css';
+import axios from 'axios';
 
 function SetupWizard() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -35,7 +36,16 @@ function SetupWizard() {
 
   // eslint-disable-next-line no-unused-vars
   const handleSubmit = async () => {
-    // Submit your final form data to the server
+    try {
+      const response = await axios.post('/profiles', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log(response.data.message); // Handle successful profile creation
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

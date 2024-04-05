@@ -19,11 +19,10 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/api/login', { username, password });
-      console.log(response.data.message); // Handle successful login
-      // Redirect to the appropriate page based on user role
+      const response = await axios.post('http://localhost:3000/login', { username, password });
+      console.log(response.data.message); 
     } catch (error) {
-      setError(error.response.data.message); // Display error message
+      setError(error.response.data.message); 
     }
   };
 
