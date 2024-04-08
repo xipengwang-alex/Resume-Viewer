@@ -5,7 +5,7 @@ const StudentProfileSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   gpa: Number,
-  graduation: String,
+  graduation: Number,
   major: String,
   willNeedSponsorship: String,
   sponsorshipTimeframe: String,

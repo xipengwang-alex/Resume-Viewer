@@ -7,23 +7,16 @@ function Resumes() {
   const [nameFilter, setFilter] = useState('');
   const [majorFilter, setMajorFilter] = useState('');
   const [gpaFilter, setGpaFilter] = useState('');
-  const [yearFilter, setYearFilter] = useState('');
+  const [graduationYearFilter, setGraduationYearFilter] = useState('');
   const [sortBy, setSortBy] = useState('fileName');
   const [sortOrder, setSortOrder] = useState('asc');
 
-  const yearValues = {
-    Freshman: 1,
-    Sophomore: 2,
-    Junior: 3,
-    Senior: 4,
-  };
-  
   function resetFilters() {
     setFilter('');
     setGpaFilter('');
-    setYearFilter('');
+    setGraduationYearFilter('');
     setMajorFilter('');
-    setSortBy('year');
+    setSortBy('year'); // Make sure 'year' corresponds to your updated logic
     setSortOrder('asc');
   }
   
@@ -40,32 +33,39 @@ function Resumes() {
     window.open(url, '_blank');
   };
   
-
   const filteredResumes = resumes.filter(resume =>
-    `${resume.tags["first name"]} ${resume.tags["last name"]}`
-    .toLowerCase()
-    .includes(nameFilter.toLowerCase()) &&
-    (resume.tags.major ? resume.tags.major.toLowerCase().includes(majorFilter.toLowerCase()) : true) &&
-    (gpaFilter === '' || (resume.tags && resume.tags.gpa >= gpaFilter)) &&
-    (yearFilter ? yearValues[resume.tags.year] >= parseInt(yearFilter) : true)
-);
-
+    `${resume.firstName} ${resume.lastName}`
+      .toLowerCase()
+      .includes(nameFilter.toLowerCase()) &&
+      (resume.major ? resume.major.toLowerCase().includes(majorFilter.toLowerCase()) : true) &&
+      (gpaFilter === '' || (resume.gpa >= gpaFilter)) &&
+      (graduationYearFilter === '' || (resume.graduation.toString() === graduationYearFilter))
+  );
+  
   const sortedResumes = [...filteredResumes].sort((a, b) => {
     const isAsc = sortOrder === 'asc' ? 1 : -1;
     let aValue, bValue;
-    
-    if (sortBy === 'year') {
-      aValue = yearValues[a.tags.year];
-      bValue = yearValues[b.tags.year];
-    } else if (['gpa', 'last name'].includes(sortBy)) {
-      aValue = a.tags[sortBy];
-      bValue = b.tags[sortBy];
+  
+    if (sortBy === 'graduation') {
+      aValue = a.graduation;
+      bValue = b.graduation;
+    } else if (sortBy === 'gpa') {
+      aValue = a.gpa;
+      bValue = b.gpa;
+    } else if (sortBy === 'lastName') {
+      aValue = a.lastName;
+      bValue = b.lastName;
+    } else if (sortBy === 'uploadedAt') {
+      aValue = new Date(a.resume.uploadedAt);
+      bValue = new Date(b.resume.uploadedAt);
     } else {
       aValue = a[sortBy];
       bValue = b[sortBy];
     }
-    
-    return aValue < bValue ? -1 * isAsc : 1 * isAsc;
+  
+    if (aValue < bValue) return -1 * isAsc;
+    if (aValue > bValue) return 1 * isAsc;
+    return 0;
   });
 
 
@@ -96,15 +96,15 @@ function Resumes() {
                 step="0.5"
                 style={{ width: '80px' }}
             />
-            <select
-                value={yearFilter}
-                onChange={(e) => setYearFilter(e.target.value)}
-            >
-                <option value="1">Freshman</option>
-                <option value="2">Sophomore</option>
-                <option value="3">Junior</option>
-                <option value="4">Senior</option>
-            </select>
+            <input
+                type="number"
+                placeholder="Graduation Year"
+                value={graduationYearFilter}
+                onChange={(e) => setGraduationYearFilter(e.target.value)}
+                min="2020"
+                max="2030"
+                style={{ width: '150px' }}
+            />
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                 <option value="year">Sort by Year</option>
                 <option value="gpa">Sort by GPA</option>
@@ -123,27 +123,25 @@ function Resumes() {
                     <tr>
                         <th>Name</th>
                         <th>Major</th>
-                        <th>Gender</th>
                         <th>GPA</th>
-                        <th>Year</th>
+                        <th>Expected Graduation</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {sortedResumes.map(resume => (
-                        <tr key={resume._id}>
-                            <td>{resume.tags && `${resume.tags["first name"]} ${resume.tags["last name"]}`}</td>
-                            <td>{resume.tags && resume.tags.major}</td>
-                            <td>{resume.tags && resume.tags.gender}</td>
-                            <td>{resume.tags && resume.tags.gpa}</td>
-                            <td>{resume.tags && resume.tags.year}</td>
-                            <td>
-                                <button onClick={() => openResume(`http://localhost:3000${resume.filePath}`)}>
-                                    View
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
+                  {sortedResumes.map((resume, index) => (
+                    <tr key={index}>
+                      <td>{`${resume.firstName} ${resume.lastName}`}</td>
+                      <td>{resume.major || 'N/A'}</td>
+                      <td>{resume.gpa || 'N/A'}</td>
+                      <td>{resume.graduation || 'N/A'}</td>
+                      <td>
+                        <button onClick={() => openResume(`http://localhost:3000${resume.resume.filePath}`)}>
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
             </table>
         </div>

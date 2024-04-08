@@ -16,7 +16,7 @@ function RegistrationPage() {
       const response = await axios.post('http://localhost:3000/register', { username, password, role });
       console.log(response.data.message);
 
-      navigate('/upload');
+      navigate('/setup');
     } catch (error) {
       setError(error.response.data.message); 
     }

@@ -10,13 +10,16 @@ import axios from 'axios';
 
 function SetupWizard() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
-    // Initialize your form data structure here
-  });
+  const [formData, setFormData] = useState({ examsPassed: {} });
+  const [file, setFile] = useState(null);
 
   const navigate = useNavigate(); 
-  const totalSteps = 4; // Update this if you have more steps
+  const totalSteps = 4; 
   const stepIndicator = `${currentStep-1}/${totalSteps-2}`;
+
+  const handleFileChange = (file) => {
+    setFile(file);
+  };
 
   const nextStep = () => {
     setCurrentStep(currentStep >= totalSteps ? totalSteps : currentStep + 1);
@@ -34,15 +37,36 @@ function SetupWizard() {
     navigate('/upload');
   };
 
-  // eslint-disable-next-line no-unused-vars
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('/profiles', formData, {
+      const token = localStorage.getItem('token');
+      const form = new FormData();
+
+      for (const [key, value] of Object.entries(formData)) {
+        if (key === 'examsPassed') {
+          form.append(key, JSON.stringify(value));
+        } else {
+          form.append(key, value);
+        }
+      }
+      
+      console.log('Form Data:', formData);
+
+      if (file) {
+        form.append('resume', file);
+      }
+
+      // post
+      const response = await axios.post('http://localhost:3000/resumes', form, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data.message); // Handle successful profile creation
+
+      console.log(response.data.message); 
+
+      nextStep();
     } catch (error) {
       console.error(error);
     }
@@ -52,10 +76,9 @@ function SetupWizard() {
     <div className="setup-wizard">
       <SetupProgressBar currentStep={currentStep} totalSteps={totalSteps} />
       {currentStep === 1 && <Setup1 formData={formData} setFormData={setFormData} />}
-      {currentStep === 2 && <Setup2 formData={formData} setFormData={setFormData} />}
+      {currentStep === 2 && <Setup2 formData={formData} setFormData={setFormData} handleFileChange={handleFileChange} />}
       {currentStep === 3 && <Setup3 formData={formData} setFormData={setFormData} />}
       {currentStep === 4 && <Setup4 formData={formData} setFormData={setFormData} />}
-      {/* ... other conditional steps if any ... */}
       
       <div className="navigation-container setup">
         {currentStep > 1 && currentStep < totalSteps && (
@@ -70,6 +93,8 @@ function SetupWizard() {
           <button className="button gold" onClick={handleStart}>Get Started</button>
         ) : currentStep === totalSteps ? (
           <button className="button gold" onClick={handleEditProfile}>Edit Profile</button>
+        ) : currentStep === totalSteps - 1 ? (
+          <button className="button gold" onClick={handleSubmit}>Submit</button>
         ) : (
           <button className="button gold" onClick={nextStep}>Next</button>
         )}

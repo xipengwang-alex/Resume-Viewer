@@ -14,7 +14,7 @@ function Setup4({ formData, setFormData }) {
 
       <p>Thank You for Uploading Your Resume!</p>
 
-      <p>View the Actuarial Science Calendar <a href="http://example.com/calendar" target="_blank" rel="noopener noreferrer">Here</a>.</p>
+      <p>View the Actuarial Science Website <a href="https://web.ics.purdue.edu/~actuary/recruitment.html" target="_blank" rel="noopener noreferrer">Here</a>.</p>
 
     </div>
   );

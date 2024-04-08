@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import UploadPage from './components/UploadPage';
 import ResumesPage from './components/ResumesPage';
 import SetupWizard from './components/SetupWizard';
@@ -14,7 +14,6 @@ function App() {
     return (
         <Router>
             <Routes>
-                {/* Routes with the top bar */}
                 <Route path="/" element={<WithTopBarLayout />}>
                     <Route path="/upload" element={<UploadPage />} />
                     <Route path="/resumes" element={<ResumesPage />} />
@@ -22,7 +21,6 @@ function App() {
                     <Route path="/register" element={<RegistrationPage />} />
                 </Route>
                 
-                {/* Route without the top bar */}
                 <Route path="/setup" element={<BasicLayout />}>
                     <Route index element={<SetupWizard />} />
                 </Route>
@@ -31,6 +29,38 @@ function App() {
     );
 }
 
+
+function WithTopBarLayout() {
+    const location = useLocation();
+    let title = 'Resume Viewer'; 
+
+    switch (location.pathname) {
+        case '/login':
+        case '/register':
+            title = 'Resume Viewer';
+            break;
+        case '/upload':
+            title = 'Edit Your Profile';
+            break;
+        case '/resumes':
+            title = 'Search Resume Book';
+            break;
+    }
+
+    return (
+        <div className="App">
+            <nav className="topbar">
+                <ul>
+                    <li style={{ color: 'white', fontWeight: 'bold', fontSize: '24px' }}>{title}</li>
+                </ul>
+            </nav>
+            <div className="content">
+                <Outlet /> 
+            </div>
+        </div>
+    );
+}
+/* 
 function WithTopBarLayout() {
     return (
         <div className="App">
@@ -44,10 +74,10 @@ function WithTopBarLayout() {
                 </ul>
             </nav>
             <div className="content">
-                <Outlet /> {/* Renders the child routes */}
+                <Outlet /> 
             </div>
         </div>
     );
 }
-
+*/
 export default App;

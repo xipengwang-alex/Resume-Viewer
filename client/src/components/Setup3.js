@@ -76,8 +76,8 @@ function Setup3({ formData, setFormData, header = 1, className }) {
           <div className="input-container">
             <input 
                 type="number" 
-                name="currentGPA" 
-                value={formData.currentGPA || ""} 
+                name="gpa" 
+                value={formData.gpa || ""} 
                 onChange={handleChange} 
                 required
             />
