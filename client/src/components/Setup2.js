@@ -21,22 +21,44 @@ export const exams = [
   ];
   
 
-function Setup2({ formData, setFormData, header = 1, className }) {
+function Setup2({ formData, setFormData, header = 1, handleFileChange, className }) {
 
   const [selectedFile, setSelectedFile] = useState(null);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-    setFormData({ ...formData, [name]: newValue });
+    if (exams.some(exam => exam.id === name)) {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        examsPassed: {
+          ...prevFormData.examsPassed,
+          [name]: checked
+        }
+      }));
+    } else {
+      const newValue = type === "checkbox" ? checked : value;
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: newValue
+      }));
+    }
   };
 
+
+  const handleLocalFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    setFormData({ ...formData, resume: e.target.files[0].name });
+    handleFileChange(file);
+  };
+
+  /* 
   const handleFileChange = (e) => {
-    // Assuming you want to store only the file name in formData
     const file = e.target.files[0];
     setSelectedFile(file);
     setFormData({ ...formData, resume: e.target.files[0].name });
   };
+  */
 
   return (
     <div className={`content ${className}`}>
@@ -109,7 +131,7 @@ function Setup2({ formData, setFormData, header = 1, className }) {
                 <input 
                   type="checkbox" 
                   name={exam.id} 
-                  checked={formData[exam.id] || false} 
+                  checked={formData.examsPassed[exam.id] || false} 
                   onChange={handleChange} 
                 />
                 <span className="exam-label">{exam.label}</span>
@@ -136,7 +158,7 @@ function Setup2({ formData, setFormData, header = 1, className }) {
                 name="resume"
                 id="resume"
                 accept=".pdf,.doc,.docx"
-                onChange={handleFileChange}
+                onChange={handleLocalFileChange}
                 required
               />
             </div>

@@ -4,8 +4,6 @@ const StudentProfileSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  gender: String,
-  year: String,
   gpa: Number,
   graduation: String,
   major: String,
@@ -32,7 +30,6 @@ const StudentProfileSchema = new mongoose.Schema({
     exam6: Boolean,
   },
   resume: {
-    fileName: String,
     filePath: String,
     uploadedAt: { type: Date, default: Date.now },
   }

@@ -3,21 +3,24 @@ const cors = require('cors');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
+global.secretKey = 'secretKey';
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, 'resumes/')
+    const resumesDir = path.join(__dirname, '..', 'resumes');
+    cb(null, resumesDir);
   },
   filename: function(req, file, cb) {
     cb(null, file.originalname)
   }
 });
 
-
-
 const upload = multer({ storage: storage });
-const uri = "mongodb+srv://wangx:a2UKOohXAiXd05iC@us-east-serverlessinsta.cnthoht.mongodb.net/resume_viewer?retryWrites=true&w=majority&appName=US-East-ServerlessInstance";
 
+const uri = "mongodb+srv://wangx:a2UKOohXAiXd05iC@us-east-serverlessinsta.cnthoht.mongodb.net/resume_viewer?retryWrites=true&w=majority&appName=US-East-ServerlessInstance";
+//TODO: Add environment variables for the connection string and JWT secret key
+
+const authMiddleware = require('./middleware/authMiddleware');
 const loginRoutes = require('./routes/loginRoutes');
 const registrationRoutes = require('./routes/registrationRoutes');
 const StudentProfile = require('./models/StudentProfile');
@@ -26,8 +29,6 @@ const User = require('./models/User');
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Mongoose is connected"))
   .catch(e => console.log("could not connect", e));
-
-
 
 
 const app = express();
@@ -47,46 +48,47 @@ app.get('/resumes', async (req, res) => {
 
 
 
+    
 app.post('/resumes', upload.single('resume'), async (req, res) => {
   try {
-    const { firstName, lastName, gender, year, gpa, graduation, major, willNeedSponsorship, sponsorshipTimeframe, opportunityType, pastInternships, examsPassed } = req.body;
+    console.log('Request Body:', req.body);
+
+    
+    const { examsPassed, firstName, lastName, gpa, graduation, major, willNeedSponsorship, sponsorshipTimeframe, opportunityType, pastInternships } = req.body;
+    const parsedExamsPassed = JSON.parse(examsPassed);
     const resume = req.file;
 
+    /*
     const user = req.user;
 
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-    
+    */
     const newProfile = new StudentProfile({
-      user: user._id,
+      user: '660f78139b56a0b02a622950',
       firstName,
       lastName,
-      gender,
-      year,
       gpa,
       graduation,
       major,
       willNeedSponsorship,
-      sponsorshipTimeframe,
+      sponsorshipTimeframe, 
       opportunityType,
       pastInternships,
-      examsPassed,
+      examsPassed: parsedExamsPassed,
       resume: {
-        fileName: resume.originalname,
         filePath: `/resumes/${resume.originalname}`,
       },
     });
 
     await newProfile.save();
-
     res.json({ message: 'Profile created successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 
 

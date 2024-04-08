@@ -72,17 +72,16 @@ function Setup3({ formData, setFormData, header = 1, className }) {
         {/* Question 5 */}
         <div className="question">
           <p>5. What is your current GPA?</p>
-          <select
-            name="currentGPA"
-            value={formData.currentGPA || ''}
-            onChange={handleChange}
-          >
-            <option value="">Select GPA</option>
-            <option value="3.5-4.0">3.5 - 4.0</option>
-            <option value="3.0-3.49">3.0 - 3.49</option>
-            <option value="2.5-2.99">2.5 - 2.99</option>
-            <option value="0.0-2.49">Below 2.5</option> 
-          </select>
+
+          <div className="input-container">
+            <input 
+                type="number" 
+                name="currentGPA" 
+                value={formData.currentGPA || ""} 
+                onChange={handleChange} 
+                required
+            />
+          </div>
         </div>
       </div>
     </div>

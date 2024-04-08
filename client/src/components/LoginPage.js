@@ -1,8 +1,10 @@
 // LoginPage.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function LoginPage() {
+  const navigate = useNavigate(); 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -21,6 +23,8 @@ function LoginPage() {
     try {
       const response = await axios.post('http://localhost:3000/login', { username, password });
       console.log(response.data.message); 
+
+      navigate('/upload');
     } catch (error) {
       setError(error.response.data.message); 
     }
