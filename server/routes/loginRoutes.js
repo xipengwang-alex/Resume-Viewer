@@ -27,11 +27,12 @@ router.post('/', async (req, res) => {
     };
 
 
-    const token = jwt.sign(payload, global.secretKey, { expiresIn: '30min' });
-
-
+    const token = jwt.sign(payload, global.secretKey, { expiresIn: '1h' });
 
     res.json({ token, message: 'Login successful', role: user.role });
+
+
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

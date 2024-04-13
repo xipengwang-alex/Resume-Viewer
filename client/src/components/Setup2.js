@@ -21,26 +21,28 @@ export const exams = [
   ];
   
 
-function Setup2({ formData, setFormData, header = 1, handleFileChange, className }) {
+function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly = false, className }) {
 
   const [selectedFile, setSelectedFile] = useState(null);
+
   
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (exams.some(exam => exam.id === name)) {
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        examsPassed: {
-          ...prevFormData.examsPassed,
-          [name]: checked
-        }
-      }));
-    } else {
-      const newValue = type === "checkbox" ? checked : value;
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        [name]: newValue
-      }));
+    if (!readOnly) {
+      const { name, value, type, checked } = e.target;
+      if (type === "checkbox") {
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          examsPassed: {
+            ...prevFormData.examsPassed,
+            [name]: checked
+          }
+        }));
+      } else {
+        setFormData(prevFormData => ({
+          ...prevFormData,
+          [name]: value
+        }));
+      }
     }
   };
 
@@ -73,6 +75,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, className
                 name="firstName" 
                 value={formData.firstName || ""} 
                 onChange={handleChange} 
+                className={readOnly ? "read-only" : ""}
                 required
             />
           </div>
@@ -84,6 +87,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, className
                 name="lastName" 
                 value={formData.lastName || ""} 
                 onChange={handleChange} 
+                className={readOnly ? "read-only" : ""}
                 required
             />
           </div>
@@ -95,6 +99,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, className
                 name="graduation" 
                 value={formData.graduation || ""} 
                 onChange={handleChange} 
+                className={readOnly ? "read-only-select" : ""}
                 required
             >
                 <option value="">Select Year</option>
@@ -112,6 +117,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, className
                 name="major" 
                 value={formData.major || ""} 
                 onChange={handleChange} 
+                className={readOnly ? "read-only-select" : ""}
                 required
             >
               <option value="">Select Major</option>
@@ -125,19 +131,39 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, className
 
         <label htmlFor="skills">Passed Exams:</label>
         <div className="exams-grid">
-          {exams.map(exam => (
-            <div key={exam.id} className="exam-checkbox">
-              <label>
-                <input 
-                  type="checkbox" 
-                  name={exam.id} 
-                  checked={formData.examsPassed[exam.id] || false} 
-                  onChange={handleChange} 
-                />
-                <span className="exam-label">{exam.label}</span>
-              </label>
-            </div>
-          ))}
+          {readOnly ? (
+            exams.filter(exam => formData.examsPassed[exam.id]).map(exam => (
+                <div key={exam.id} className="exam-checkbox">
+                  <label>
+                    <input 
+                      type="checkbox" 
+                      name={exam.id} 
+                      checked={formData.examsPassed[exam.id] || false} 
+                      onChange={handleChange} 
+                      readOnly={readOnly}
+                      className={readOnly ? "read-only" : ""}
+                    />
+                    <span className="exam-label">{exam.label}</span>
+                  </label>
+                </div>
+              ))
+          ) : (
+            exams.map(exam => (
+              <div key={exam.id} className="exam-checkbox">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    name={exam.id} 
+                    checked={formData.examsPassed[exam.id] || false} 
+                    onChange={handleChange} 
+                    readOnly={readOnly}
+                    className={readOnly ? "read-only" : ""}
+                  />
+                  <span className="exam-label">{exam.label}</span>
+                </label>
+              </div>
+            ))
+          )}
         </div>
 
        <br/>
@@ -159,6 +185,8 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, className
                 id="resume"
                 accept=".pdf,.doc,.docx"
                 onChange={handleLocalFileChange}
+                readOnly={readOnly}
+                className={readOnly ? "read-only" : ""}
                 required
               />
             </div>

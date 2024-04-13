@@ -41,15 +41,29 @@ app.use('/login', loginRoutes);
 app.use('/register', registrationRoutes);
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
+
 app.get('/resumes', async (req, res) => {
   const profiles = await StudentProfile.find();
   res.json(profiles);
 });
 
 
+app.get('/myprofile', authMiddleware, async (req, res) => {
+  try {
+      const profile = await StudentProfile.findOne({ user: req.user.id }); 
+      if (!profile) {
+          return res.status(404).json({ message: 'Profile not found' });
+      }
+      res.json(profile);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
     
-app.post('/resumes', upload.single('resume'), async (req, res) => {
+app.post('/resumes', authMiddleware, upload.single('resume'), async (req, res) => {
   try {
     console.log('Request Body:', req.body);
 

@@ -20,14 +20,19 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post('http://localhost:3000/login', { username, password });
-      console.log(response.data.message); 
+  await axios.post('http://localhost:3000/login', { username, password })
+    .then(response => {
+      localStorage.setItem('token', response.data.token); 
+      console.log('Token stored:', localStorage.getItem('token'));
+      console.log('LoginPage response:', response.data.message); 
 
       navigate('/upload');
-    } catch (error) {
+    })
+    .catch(error => {
+      console.error('Login failed:', error);
       setError(error.response.data.message); 
-    }
+    });
+
   };
 
   return (
