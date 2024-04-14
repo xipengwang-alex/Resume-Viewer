@@ -7,7 +7,7 @@ global.secretKey = 'secretKey';
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    const resumesDir = path.join(__dirname, '..', 'resumes');
+    const resumesDir = path.join(__dirname, 'resumes');
     cb(null, resumesDir);
   },
   filename: function(req, file, cb) {

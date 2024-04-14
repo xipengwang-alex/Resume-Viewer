@@ -78,14 +78,14 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false,  classNam
         {/* Question 5 */}
         <div className="question">
           <p>5. What is your current GPA?</p>
-
-          <div className="input-container">
+          <div className="input-container" >
             <input 
                 type="number" 
                 name="gpa" 
                 value={formData.gpa || ""} 
                 onChange={handleChange} 
                 className={readOnly ? "read-only" : ""}
+                style={{ width: '180px' }} 
                 required
             />
           </div>

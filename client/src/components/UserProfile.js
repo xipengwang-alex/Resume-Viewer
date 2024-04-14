@@ -41,7 +41,7 @@ function UserProfile() {
                     />
                 </>
             ) : (
-                <p>You don't have a profile yet...</p>
+                <p>Retrieving your profile...</p>
             )}
         </div>
     );

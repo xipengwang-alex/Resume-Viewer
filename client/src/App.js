@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Outlet, useLocation } from 'react-router-dom';
 import UploadPage from './components/UploadPage';
@@ -30,6 +31,80 @@ function App() {
         </Router>
     );
 }
+
+
+
+function WithTopBarLayout() {
+    const [profile, setProfile] = useState(null);
+    const [isHidden, setIsHidden] = useState(false);
+  
+    useEffect(() => {
+      const fetchProfile = async () => {
+        try {
+          const res = await axios.get('http://localhost:3000/myprofile', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+          });
+          setProfile(res.data);
+        } catch (err) {
+          console.error('Failed to fetch profile', err);
+        }
+      };
+  
+      fetchProfile();
+    }, []);
+  
+    const getInitials = () => {
+      if (profile) {
+        const { firstName, lastName } = profile;
+        return `${firstName.charAt(0)}${lastName.charAt(0)}`;
+      }
+      return '';
+    };
+
+
+    const handleToggle = () => {
+        setIsHidden(!isHidden);
+    };
+
+      
+
+
+    return (
+        <div className="App">
+          <nav className="topbar">
+            <ul>
+              <li><Link to="/upload">Edit Profile</Link></li>
+              <li><Link to="/resumes">View Resumes</Link></li>
+              <li><Link to="/setup">Setup Wizard</Link></li>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/register">Register</Link></li>
+              <li><Link to="/myprofile">My Profile</Link></li>
+            </ul>
+            {profile && (
+              <div className="profile-section">
+                <label className="radio-button">
+                  <input
+                    type="checkbox"
+                    checked={isHidden}
+                    onChange={handleToggle}
+                  />
+                  <span className="checkmark"></span>
+                </label>
+                <div className="profile-circle">
+                  <span>{getInitials()}</span>
+                </div>
+              </div>
+            )}
+          </nav>
+          <div className="content">
+            <Outlet />
+          </div>
+        </div>
+      );
+    }
+
 
 /* 
 
@@ -65,25 +140,4 @@ function WithTopBarLayout() {
 }
 
 */
-
-
-function WithTopBarLayout() {
-    return (
-        <div className="App">
-            <nav className="topbar">
-                <ul>
-                    <li><Link to="/upload">Edit Profile</Link></li>
-                    <li><Link to="/resumes">View Resumes</Link></li>
-                    <li><Link to="/setup">Setup Wizard</Link></li>
-                    <li><Link to="/login">Login</Link></li>
-                    <li><Link to="/register">Register</Link></li>
-                    <li><Link to="/myprofile">My Profile</Link></li>
-                </ul>
-            </nav>
-            <div className="content">
-                <Outlet /> 
-            </div>
-        </div>
-    );
-}
 export default App;

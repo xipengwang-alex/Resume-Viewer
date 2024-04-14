@@ -16,7 +16,7 @@ function Resumes() {
     setGpaFilter('');
     setGraduationYearFilter('');
     setMajorFilter('');
-    setSortBy('year'); // Make sure 'year' corresponds to your updated logic
+    setSortBy('year');
     setSortOrder('asc');
   }
   

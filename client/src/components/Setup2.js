@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SetupHeader from './SetupHeader';
 
+
 export const exams = [
     { id: "p", label: "P" }, 
     { id: "fm", label: "FM" }, 
@@ -24,6 +25,9 @@ export const exams = [
 function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly = false, className }) {
 
   const [selectedFile, setSelectedFile] = useState(null);
+  const numExamsPassed = Object.values(formData.examsPassed).filter(Boolean).length;
+      
+
 
   
   const handleChange = (e) => {
@@ -130,7 +134,12 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly 
         </div>
 
         <label htmlFor="skills">Passed Exams:</label>
-        <div className="exams-grid">
+        <div
+          className="exams-grid"
+          style={
+            readOnly ? { height: `${Math.ceil(numExamsPassed / 6) * 35 - 35}px` } : {}
+          }
+        >
           {readOnly ? (
             exams.filter(exam => formData.examsPassed[exam.id]).map(exam => (
                 <div key={exam.id} className="exam-checkbox">
@@ -168,6 +177,22 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly 
 
        <br/>
 
+      {readOnly ? (
+        formData.resume && formData.resume.filePath ? (
+          <div className="resume-viewer">
+          <p>View Resume:</p>
+          <object
+            className="object-pdf"
+            data={"http://localhost:3000"+formData.resume.filePath}
+            type="application/pdf"
+            data-zoom="1"
+            aria-label="Resume PDF Viewer"
+          ></object>
+          </div>
+        ) : (
+            <p>No resume uploaded.</p>
+        )
+      ) : (
         <div className="resume-upload">
           <label htmlFor="resume" className="resume-upload-label">
             <div className="resume-upload-area">
@@ -192,6 +217,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly 
             </div>
           </label>
         </div>
+      )}
 
       </form>
     </div>
