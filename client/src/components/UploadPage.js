@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Setup2 from './Setup2';
@@ -9,9 +9,36 @@ function UploadPage() {
   const [formData, setFormData] = useState({ examsPassed: {} });
   const [file, setFile] = useState(null);
 
+  
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const res = await axios.get('http://localhost:3000/myprofile', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setFormData(res.data);
+
+          if (res.data.resume && res.data.resume.filePath) {
+            const resumeUrl = 'http://localhost:3000' + res.data.resume.filePath;
+            setFile(resumeUrl);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
   const handleFileChange = (file) => {
     setFile(file);
   };
+
 
   const handleSave = async () => {
     try {
@@ -24,13 +51,13 @@ function UploadPage() {
         } else {
           form.append(key, value);
         }
-      }
-      
-      console.log('Form Data:', formData);
+      } 
 
       if (file) {
         form.append('resume', file);
       }
+
+      console.log('Form Data:', formData);
 
       // post
       const response = await axios.post('http://localhost:3000/resumes', form, {
@@ -54,6 +81,7 @@ function UploadPage() {
             formData={formData}
             setFormData={setFormData}
             handleFileChange={handleFileChange} 
+            file={file}
             header={0}
             className="upload-page-content"
             />

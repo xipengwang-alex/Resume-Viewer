@@ -62,6 +62,32 @@ app.get('/myprofile', authMiddleware, async (req, res) => {
 });
 
 
+app.put('/myprofile', authMiddleware, async (req, res) => {
+  try {
+    const { isHidden } = req.body;
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const profile = await StudentProfile.findOneAndUpdate(
+      { user: user.id },
+      { isHidden },
+      { new: true }
+    );
+
+    if (!profile) {
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+
+    res.json({ message: 'Profile visibility updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
     
 app.post('/resumes', authMiddleware, upload.single('resume'), async (req, res) => {
   try {
@@ -71,33 +97,56 @@ app.post('/resumes', authMiddleware, upload.single('resume'), async (req, res) =
     const { examsPassed, firstName, lastName, gpa, graduation, major, willNeedSponsorship, sponsorshipTimeframe, opportunityType, pastInternships } = req.body;
     const parsedExamsPassed = JSON.parse(examsPassed);
     const resume = req.file;
-
-    /*
     const user = req.user;
 
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
-    */
-    const newProfile = new StudentProfile({
-      user: '660f78139b56a0b02a622950',
-      firstName,
-      lastName,
-      gpa,
-      graduation,
-      major,
-      willNeedSponsorship,
-      sponsorshipTimeframe, 
-      opportunityType,
-      pastInternships,
-      examsPassed: parsedExamsPassed,
-      resume: {
-        filePath: `/resumes/${resume.originalname}`,
-      },
-    });
 
-    await newProfile.save();
-    res.json({ message: 'Profile created successfully' });
+    const existingProfile = await StudentProfile.findOne({ user: user.id });
+
+    if (existingProfile) {
+      existingProfile.firstName = firstName;
+      existingProfile.lastName = lastName;
+      existingProfile.gpa = gpa;
+      existingProfile.graduation = graduation;
+      existingProfile.major = major;
+      existingProfile.willNeedSponsorship = willNeedSponsorship;
+      existingProfile.sponsorshipTimeframe = sponsorshipTimeframe;
+      existingProfile.opportunityType = opportunityType;
+      existingProfile.pastInternships = pastInternships;
+      existingProfile.examsPassed = parsedExamsPassed;
+      
+      if (resume) {
+        existingProfile.resume = {
+          filePath: `/resumes/${resume.originalname}`,
+        };
+      }
+
+      await existingProfile.save();
+      res.json({ message: 'Profile updated successfully' });
+    } else {
+
+      const newProfile = new StudentProfile({
+        user: user.id,
+        firstName,
+        lastName,
+        gpa,
+        graduation,
+        major,
+        willNeedSponsorship,
+        sponsorshipTimeframe, 
+        opportunityType,
+        pastInternships,
+        examsPassed: parsedExamsPassed,
+        resume: {
+          filePath: `/resumes/${resume.originalname}`,
+        },
+      });
+
+      await newProfile.save();
+      res.json({ message: 'Profile created successfully' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

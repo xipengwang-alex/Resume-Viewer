@@ -47,6 +47,7 @@ function WithTopBarLayout() {
             }
           });
           setProfile(res.data);
+          setIsHidden(res.data.isHidden);
         } catch (err) {
           console.error('Failed to fetch profile', err);
         }
@@ -64,9 +65,19 @@ function WithTopBarLayout() {
     };
 
 
-    const handleToggle = () => {
+    const handleToggle = async () => {
+      try {
+        await axios.put('http://localhost:3000/myprofile', { isHidden: !isHidden }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
         setIsHidden(!isHidden);
+      } catch (err) {
+        console.error('Failed to update profile visibility', err);
+      }
     };
+  
 
       
 

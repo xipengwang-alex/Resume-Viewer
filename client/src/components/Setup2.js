@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SetupHeader from './SetupHeader';
 
 
@@ -22,11 +22,17 @@ export const exams = [
   ];
   
 
-function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly = false, className }) {
+function Setup2({ formData, setFormData, header = 1, handleFileChange, file, readOnly = false, className }) {
 
   const [selectedFile, setSelectedFile] = useState(null);
   const numExamsPassed = Object.values(formData.examsPassed).filter(Boolean).length;
       
+
+  useEffect(() => {
+    if (file) {
+      setSelectedFile(file);
+    }
+  }, [file]);
 
 
   
@@ -52,10 +58,10 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly 
 
 
   const handleLocalFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-    setFormData({ ...formData, resume: e.target.files[0].name });
-    handleFileChange(file);
+    const newFile = e.target.files[0];
+    setSelectedFile(newFile);
+    setFormData({ ...formData, resume: newFile.name });
+    handleFileChange(newFile);
   };
 
   /* 
@@ -197,7 +203,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly 
           <label htmlFor="resume" className="resume-upload-label">
             <div className="resume-upload-area">
               {selectedFile ? (
-                <p className="selected-file-name">Selected file: {selectedFile.name}</p>
+                <p className="selected-file-name">Selected file: {typeof selectedFile === 'string' ? selectedFile.split('/').pop() : selectedFile.name}</p>
               ) : (
                 <>
                   <h1>Upload a new resume from device</h1>
@@ -208,7 +214,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, readOnly 
                 type="file"
                 name="resume"
                 id="resume"
-                accept=".pdf,.doc,.docx"
+                accept=".pdf"
                 onChange={handleLocalFileChange}
                 readOnly={readOnly}
                 className={readOnly ? "read-only" : ""}

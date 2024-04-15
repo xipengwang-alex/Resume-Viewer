@@ -4,6 +4,7 @@ const StudentProfileSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
+  isHidden: { type: Boolean, default: false },
   gpa: Number,
   graduation: Number,
   major: String,
