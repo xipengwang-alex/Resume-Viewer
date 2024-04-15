@@ -1,16 +1,14 @@
 import React from 'react';
 
-function Setup4({ formData, setFormData }) {
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+function Setup4({ formData, setFormData, showSuccess = false}) {
 
   return (
     <div className="content">
       <h1>Your Resume Book Profile</h1>
 
-      <p><br/><br/><br/><br/><br/><br/><br/><br/>Success!</p>
+      <br/><br/><br/><br/><br/><br/><br/>
+      
+      {showSuccess && <p>Success!</p>}
 
       <p>Thank You for Uploading Your Resume!</p>
 

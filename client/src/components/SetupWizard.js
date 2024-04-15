@@ -34,7 +34,7 @@ function SetupWizard() {
   };
 
   const handleEditProfile = () => {
-    navigate('/upload');
+    navigate('/myprofile');
   };
 
   const handleSubmit = async () => {
@@ -66,7 +66,7 @@ function SetupWizard() {
 
       console.log(response.data.message); 
 
-      nextStep();
+      navigate('/landing', { state: { showSuccess: true } });
     } catch (error) {
       console.error(error);
     }
@@ -92,7 +92,7 @@ function SetupWizard() {
         {currentStep === 1 ? (
           <button className="button gold" onClick={handleStart}>Get Started</button>
         ) : currentStep === totalSteps ? (
-          <button className="button gold" onClick={handleEditProfile}>Edit Profile</button>
+          <button className="button gold" onClick={handleEditProfile}>View Profile</button>
         ) : currentStep === totalSteps - 1 ? (
           <button className="button gold" onClick={handleSubmit}>Submit</button>
         ) : (

@@ -39,6 +39,9 @@ function UploadPage() {
     setFile(file);
   };
 
+  const handleCancel = () => {
+    navigate('/landing');
+  };
 
   const handleSave = async () => {
     try {
@@ -68,7 +71,7 @@ function UploadPage() {
       });
 
       console.log(response.data.message);
-      navigate('/resumes');
+      navigate('/landing', { state: { showSuccess: true } });
     } catch (error) {
       console.error(error);
     }
@@ -93,7 +96,7 @@ function UploadPage() {
             />
 
             <div className="navigation-container edit">
-                <button className="button black">Cancel</button>
+                <button className="button black" onClick={handleCancel}>Cancel</button>
                 <button className="button gold" onClick={handleSave}>Save</button>
             </div>
         </div>

@@ -9,6 +9,7 @@ import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
 import UserProfile from './components/UserProfile';
 import BasicLayout from './BasicLayout';
+import LandingPage from './components/LandingPage';
 import './styles.css';
 
 
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegistrationPage />} />
                     <Route path="/myprofile" element={<UserProfile />} />
+                    <Route path="/landing" element={<LandingPage />} />
                 </Route>
                 
                 <Route path="/setup" element={<BasicLayout />}>
@@ -92,6 +94,7 @@ function WithTopBarLayout() {
               <li><Link to="/login">Login</Link></li>
               <li><Link to="/register">Register</Link></li>
               <li><Link to="/myprofile">My Profile</Link></li>
+              <li><Link to="/landing">Landing Page</Link></li>
             </ul>
             {profile && (
               <div className="profile-section">
