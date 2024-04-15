@@ -26,7 +26,7 @@ function LoginPage() {
       console.log('Token stored:', localStorage.getItem('token'));
       console.log('LoginPage response:', response.data.message); 
       
-      navigate('/myprofile', { replace: true });
+      navigate('/landing', { replace: true });
       window.location.reload();
     })
     .catch(error => {
