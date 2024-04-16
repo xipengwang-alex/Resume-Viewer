@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SetupProgressBar from './SetupProgressBar';
 import Setup1 from './Setup1';
@@ -13,9 +13,18 @@ function SetupWizard() {
   const [formData, setFormData] = useState({ examsPassed: {} });
   const [file, setFile] = useState(null);
 
-  const navigate = useNavigate(); 
   const totalSteps = 4; 
   const stepIndicator = `${currentStep-1}/${totalSteps-2}`;
+  const navigate = useNavigate(); 
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
 
   const handleFileChange = (file) => {
     setFile(file);

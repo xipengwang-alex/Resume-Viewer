@@ -9,6 +9,8 @@ function RegistrationPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate(); 
 
+
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -16,6 +18,7 @@ function RegistrationPage() {
       const response = await axios.post('http://localhost:3000/register', { username, password, role });
       console.log(response.data.message);
 
+      localStorage.setItem('token', response.data.token);
       navigate('/setup');
     } catch (error) {
       setError(error.response.data.message); 

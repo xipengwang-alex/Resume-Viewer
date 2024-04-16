@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 router.post('/', async (req, res) => {
   try {
@@ -26,7 +27,15 @@ router.post('/', async (req, res) => {
     
     await newUser.save();
 
-    res.json({ message: 'User registered successfully' });
+    const payload = {
+      id: newUser._id,
+      role: newUser.role
+    };
+
+
+    const token = jwt.sign(payload, global.secretKey, { expiresIn: '1h' });
+
+    res.json({ message: 'User registered successfully', token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
