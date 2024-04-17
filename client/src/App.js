@@ -10,28 +10,35 @@ import RegistrationPage from './components/RegistrationPage';
 import UserProfile from './components/UserProfile';
 import BasicLayout from './BasicLayout';
 import LandingPage from './components/LandingPage';
+import withAuth from './components/withAuth';
 import './styles.css';
 
 
+const UploadPageWithAuth = withAuth(UploadPage);
+const ResumesPageWithAuth = withAuth(ResumesPage);
+const UserProfileWithAuth = withAuth(UserProfile);
+const LandingPageWithAuth = withAuth(LandingPage);
+const SetupWizardWithAuth = withAuth(SetupWizard);
+
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<WithTopBarLayout />}>
-                    <Route path="/upload" element={<UploadPage />} />
-                    <Route path="/resumes" element={<ResumesPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/register" element={<RegistrationPage />} />
-                    <Route path="/myprofile" element={<UserProfile />} />
-                    <Route path="/landing" element={<LandingPage />} />
-                </Route>
-                
-                <Route path="/setup" element={<BasicLayout />}>
-                    <Route index element={<SetupWizard />} />
-                </Route>
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<WithTopBarLayout />}>
+          <Route path="/upload" element={<UploadPageWithAuth />} />
+          <Route path="/resumes" element={<ResumesPageWithAuth />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
+          <Route path="/myprofile" element={<UserProfileWithAuth />} />
+          <Route path="/landing" element={<LandingPageWithAuth />} />
+        </Route>
+
+        <Route path="/setup" element={<BasicLayout />}>
+          <Route index element={<SetupWizardWithAuth />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
 
