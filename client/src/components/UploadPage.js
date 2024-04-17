@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Setup2 from './Setup2';
 import Setup3 from './Setup3';
+import { API_BASE_URL } from '../config';
 
 function UploadPage() {
   const navigate = useNavigate(); 
@@ -15,7 +16,7 @@ function UploadPage() {
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const res = await axios.get('http://localhost:3000/myprofile', {
+          const res = await axios.get(`${API_BASE_URL}/myprofile`, {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -23,7 +24,7 @@ function UploadPage() {
           setFormData(res.data);
 
           if (res.data.resume && res.data.resume.filePath) {
-            const resumeUrl = 'http://localhost:3000' + res.data.resume.filePath;
+            const resumeUrl = `${API_BASE_URL}` + res.data.resume.filePath;
             setFile(resumeUrl);
           }
         }
@@ -63,7 +64,7 @@ function UploadPage() {
       console.log('Form Data:', formData);
 
       // post
-      const response = await axios.post('http://localhost:3000/resumes', form, {
+      const response = await axios.post(`${API_BASE_URL}/resumes`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

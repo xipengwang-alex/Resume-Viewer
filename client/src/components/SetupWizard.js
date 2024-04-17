@@ -7,6 +7,7 @@ import Setup3 from './Setup3';
 import Setup4 from './Setup4';
 import './Setup.css';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 function SetupWizard() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -66,7 +67,7 @@ function SetupWizard() {
       }
 
       // post
-      const response = await axios.post('http://localhost:3000/resumes', form, {
+      const response = await axios.post(`${API_BASE_URL}/resumes`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

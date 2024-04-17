@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import SetupHeader from './SetupHeader';
+import { API_BASE_URL } from '../config';
 
 
 export const exams = [
@@ -189,7 +190,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
           <p>View Resume:</p>
           <object
             className="object-pdf"
-            data={"http://localhost:3000"+formData.resume.filePath}
+            data={`${API_BASE_URL}`+formData.resume.filePath}
             type="application/pdf"
             data-zoom="1"
             aria-label="Resume PDF Viewer"

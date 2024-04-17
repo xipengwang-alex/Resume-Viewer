@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 function RegistrationPage() {
   const [username, setUsername] = useState('');
@@ -15,7 +16,7 @@ function RegistrationPage() {
     try {
       e.preventDefault();
 
-      const response = await axios.post('http://localhost:3000/register', { username, password, role });
+      const response = await axios.post(`${API_BASE_URL}/register`, { username, password, role });
       console.log(response.data.message);
 
       localStorage.setItem('token', response.data.token);

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Setup2 from './Setup2';
 import Setup3 from './Setup3';
+import { API_BASE_URL } from '../config';
 
 function UserProfile() {
     const navigate = useNavigate(); 
@@ -11,7 +12,7 @@ function UserProfile() {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const res = await axios.get('http://localhost:3000/myprofile', {
+                const res = await axios.get(`${API_BASE_URL}/myprofile`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }

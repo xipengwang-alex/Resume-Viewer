@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles.css';
+import { API_BASE_URL } from '../config';
 
 function Resumes() {
   const [resumes, setResumes] = useState([]);
@@ -23,7 +24,7 @@ function Resumes() {
 
   
   useEffect(() => {
-    axios.get('http://localhost:3000/resumes')
+    axios.get(`${API_BASE_URL}/resumes`)
       .then(response => {
         setResumes(response.data);
       });
@@ -136,7 +137,7 @@ function Resumes() {
                       <td>{resume.gpa || 'N/A'}</td>
                       <td>{resume.graduation || 'N/A'}</td>
                       <td>
-                        <button onClick={() => openResume(`http://localhost:3000${resume.resume.filePath}`)}>
+                        <button onClick={() => openResume(`${API_BASE_URL}${resume.resume.filePath}`)}>
                           View
                         </button>
                       </td>

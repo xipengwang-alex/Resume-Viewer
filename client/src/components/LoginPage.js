@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 function LoginPage() {
   const navigate = useNavigate(); 
@@ -22,7 +23,7 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-  await axios.post('http://localhost:3000/login', { username, password })
+  await axios.post(`${API_BASE_URL}/login`, { username, password })
     .then(response => {
       localStorage.setItem('token', response.data.token); 
       console.log('Token stored:', localStorage.getItem('token'));

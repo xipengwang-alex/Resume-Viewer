@@ -12,6 +12,7 @@ import BasicLayout from './BasicLayout';
 import LandingPage from './components/LandingPage';
 import withAuth from './components/withAuth';
 import './styles.css';
+import { API_BASE_URL } from './config';
 
 
 const UploadPageWithAuth = withAuth(UploadPage);
@@ -50,7 +51,7 @@ function WithTopBarLayout() {
     useEffect(() => {
       const fetchProfile = async () => {
         try {
-          const res = await axios.get('http://localhost:3000/myprofile', {
+          const res = await axios.get(`${API_BASE_URL}/myprofile`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -76,7 +77,7 @@ function WithTopBarLayout() {
 
     const handleToggle = async () => {
       try {
-        await axios.put('http://localhost:3000/myprofile', { isHidden: !isHidden }, {
+        await axios.put(`${API_BASE_URL}/myprofile`, { isHidden: !isHidden }, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
