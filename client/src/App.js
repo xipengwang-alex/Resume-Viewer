@@ -76,13 +76,14 @@ function WithTopBarLayout() {
 
 
     const handleToggle = async () => {
+      const isProfileVisible = !isHidden; 
       try {
-        await axios.put(`${API_BASE_URL}/myprofile`, { isHidden: !isHidden }, {
+        await axios.put(`${API_BASE_URL}/myprofile`, { isHidden: isProfileVisible }, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
-        setIsHidden(!isHidden);
+        setIsHidden(isProfileVisible);
       } catch (err) {
         console.error('Failed to update profile visibility', err);
       }
@@ -106,14 +107,26 @@ function WithTopBarLayout() {
             </ul>
             {profile && (
               <div className="profile-section">
-                <label className="radio-button">
-                  <input
-                    type="checkbox"
-                    checked={isHidden}
-                    onChange={handleToggle}
+
+
+
+              <label className="toggle" htmlFor="myToggle">
+                  <input 
+                      className="toggle__input"
+                      type="checkbox" 
+                      id="myToggle"
+                      checked={!isHidden}
+                      onChange={handleToggle}
                   />
-                  <span className="checkmark"></span>
-                </label>
+                  <div className="toggle__fill">
+                      <span className="toggle__text toggle__text--on">Profile Visible</span>
+                      <span className="toggle__text toggle__text--off">Profile Hidden</span>
+                  </div>
+              </label>
+
+
+
+
                 <div className="profile-circle">
                   <span>{getInitials()}</span>
                 </div>

@@ -226,50 +226,82 @@ button {
     align-items: center;
   }
   
-  .radio-button {
-    position: relative;
+
+
+  .toggle {
+    --width: 140px; 
+    --height: 35px;
+    --border-radius: calc(var(--height) / 2);
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
     cursor: pointer;
-  }
-  
-  .radio-button input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  
-  .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
-    height: 20px;
-    background-color: #eee;
-    border-radius: 50%;
-  }
-  
-  .radio-button input:checked ~ .checkmark {
-    background-color: #DAAA00;
-  }
-  
-  .checkmark:after {
+    position: relative;
+    font-size: 14px;
+    background: #dddddd;
+    overflow: hidden; 
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s;
+    border: 1px solid #ffffff; 
+    margin-right: 14px;
+}
+
+.toggle__input {
+    display: none;
+}
+
+.toggle__fill {
+    position: relative;
+    width: var(--width);
+    height: var(--height);
+    transition: background 0.2s;
+}
+
+.toggle__fill::after {
     content: "";
     position: absolute;
-    display: none;
-  }
-  
-  .radio-button input:checked ~ .checkmark:after {
-    display: block;
-  }
-  
-  .radio-button .checkmark:after {
-    top: 6px;
-    left: 6px;
-    width: 8px;
-    height: 8px;
+    top: 4px;
+    left: 4px;
+    height: calc(var(--height) - 8px);
+    width: calc(var(--height) - 8px);
+    background: #ffffff;
     border-radius: 50%;
-    background: white;
-  }
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.toggle__input:checked ~ .toggle__fill {
+    background: #DAAA00;
+}
+
+.toggle__input:checked ~ .toggle__fill::after {
+    transform: translateX(calc(var(--width) - var(--height)));
+}
+
+.toggle__text {
+    position: absolute;
+    line-height: var(--height);
+    width: calc(var(--width) - var(--height));
+    text-align: center;
+    color: black;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.toggle__text--on {
+    opacity: 0;
+    left: calc(100% - 100%); 
+}
+
+.toggle__input:checked ~ .toggle__fill .toggle__text--on {
+    opacity: 1;
+    transform: translateX(5%);
+}
+
+.toggle__text--off {
+    opacity: 1;
+    right: calc(100% - 95%); 
+}
+
+.toggle__input:checked ~ .toggle__fill .toggle__text--off {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
