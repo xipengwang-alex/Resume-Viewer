@@ -5,7 +5,7 @@ import Setup2 from './Setup2';
 import Setup3 from './Setup3';
 import { API_BASE_URL } from '../config';
 
-function UploadPage() {
+function EditProfilePageWithAuth() {
   const navigate = useNavigate(); 
   const [formData, setFormData] = useState({ examsPassed: {} });
   const [file, setFile] = useState(null);
@@ -80,20 +80,20 @@ function UploadPage() {
 
 
     return (
-        <div className="upload-page">
+        <div className="edit-profile-page">
             <Setup2
             formData={formData}
             setFormData={setFormData}
             handleFileChange={handleFileChange} 
             file={file}
             header={0}
-            className="upload-page-content"
+            className="edit-profile-page-content"
             />
             <Setup3
             formData={formData}
             setFormData={setFormData}
             header={0}
-            className="upload-page-content"
+            className="edit-profile-page-content"
             />
 
             <div className="navigation-container edit">
@@ -104,4 +104,4 @@ function UploadPage() {
     );
 }
 
-export default UploadPage;
+export default EditProfilePageWithAuth;

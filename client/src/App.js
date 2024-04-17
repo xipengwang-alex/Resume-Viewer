@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Outlet, useLocation } from 'react-router-dom';
-import UploadPage from './components/UploadPage';
-import ResumesPage from './components/ResumesPage';
-import SetupWizard from './components/SetupWizard';
+import EditProfilePage from './components/EditProfilePage';
+import StudentProfileListPage from './components/StudentProfileListPage';
+import SetupWizardPage from './components/SetupWizardPage';
 import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
-import UserProfile from './components/UserProfile';
+import UserProfilePage from './components/UserProfilePage';
 import BasicLayout from './BasicLayout';
 import LandingPage from './components/LandingPage';
 import withAuth from './components/withAuth';
@@ -15,27 +15,27 @@ import './styles.css';
 import { API_BASE_URL } from './config';
 
 
-const UploadPageWithAuth = withAuth(UploadPage);
-const ResumesPageWithAuth = withAuth(ResumesPage);
-const UserProfileWithAuth = withAuth(UserProfile);
+const EditProfilePageWithAuth = withAuth(EditProfilePage);
+const StudentProfileListPageWithAuth = withAuth(StudentProfileListPage);
+const UserProfilePageWithAuth = withAuth(UserProfilePage);
 const LandingPageWithAuth = withAuth(LandingPage);
-const SetupWizardWithAuth = withAuth(SetupWizard);
+const SetupWizardPageWithAuth = withAuth(SetupWizardPage);
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<WithTopBarLayout />}>
-          <Route path="/upload" element={<UploadPageWithAuth />} />
-          <Route path="/resumes" element={<ResumesPageWithAuth />} />
+          <Route path="/edit-profile" element={<EditProfilePageWithAuth />} />
+          <Route path="/resumes" element={<StudentProfileListPageWithAuth />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/myprofile" element={<UserProfileWithAuth />} />
+          <Route path="/myprofile" element={<UserProfilePageWithAuth />} />
           <Route path="/landing" element={<LandingPageWithAuth />} />
         </Route>
 
         <Route path="/setup" element={<BasicLayout />}>
-          <Route index element={<SetupWizardWithAuth />} />
+          <Route index element={<SetupWizardPageWithAuth />} />
         </Route>
       </Routes>
     </Router>
@@ -96,7 +96,7 @@ function WithTopBarLayout() {
         <div className="App">
           <nav className="topbar">
             <ul>
-              <li><Link to="/upload">Edit Profile</Link></li>
+              <li><Link to="/edit-profile">Edit Profile</Link></li>
               <li><Link to="/resumes">View Resumes</Link></li>
               <li><Link to="/setup">Setup Wizard</Link></li>
               <li><Link to="/login">Login</Link></li>
@@ -139,7 +139,7 @@ function WithTopBarLayout() {
         case '/register':
             title = 'Resume Viewer';
             break;
-        case '/upload':
+        case '/edit-profile':
             title = 'Edit Your Profile';
             break;
         case '/resumes':

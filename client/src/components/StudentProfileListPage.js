@@ -1,10 +1,10 @@
 import React from 'react';
-import Resumes from './Resumes';
+import StudentProfileList from './StudentProfileList';
 
 function ResumesPage() {
     return (
         <div className="resumes-page">
-            <Resumes />
+            <StudentProfileList />
         </div>
     );
 }

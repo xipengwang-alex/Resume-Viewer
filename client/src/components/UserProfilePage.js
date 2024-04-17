@@ -5,7 +5,7 @@ import Setup2 from './Setup2';
 import Setup3 from './Setup3';
 import { API_BASE_URL } from '../config';
 
-function UserProfile() {
+function UserProfilePage() {
     const navigate = useNavigate(); 
     const [profile, setProfile] = useState(null);
 
@@ -32,19 +32,19 @@ function UserProfile() {
       };
     
     return (
-        <div className="upload-page">
+        <div className="edit-profile-page">
             {profile ? (
                 <>
                     <Setup2
                     formData={profile}
                     header={0}
-                    className="upload-page-content"
+                    className="edit-profile-page-content"
                     readOnly={true} 
                     />
                     <Setup3
                     formData={profile}
                     header={0}
-                    className="upload-page-content"
+                    className="edit-profile-page-content"
                     readOnly={true} 
                     />
                     <div className="button-container">
@@ -58,4 +58,4 @@ function UserProfile() {
     );
 }
 
-export default UserProfile;
+export default UserProfilePage;

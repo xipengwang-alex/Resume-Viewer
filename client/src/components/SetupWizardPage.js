@@ -9,7 +9,7 @@ import './Setup.css';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 
-function SetupWizard() {
+function SetupWizardPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({ examsPassed: {} });
   const [file, setFile] = useState(null);
@@ -112,4 +112,4 @@ function SetupWizard() {
     </div>
   );
 }
-export default SetupWizard;
+export default SetupWizardPage;

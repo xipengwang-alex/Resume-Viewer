@@ -8,7 +8,7 @@ function LandingPage() {
   const showSuccess = location.state && location.state.showSuccess;
 
   const handleEditProfile = () => {
-    navigate('/upload');
+    navigate('/edit-profile');
   };
 
   const handleViewProfile = () => {
