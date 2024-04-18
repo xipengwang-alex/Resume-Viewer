@@ -1,18 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const withAuth = (WrappedComponent) => {
   const AuthenticatedComponent = (props) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
+    const validateToken = useCallback( async (token) => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/validateToken`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log('Token is valid:', res.data);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Token validation failed:', error);
+        navigate('/login');
+      }
+      setIsLoading(false);
+    }, [navigate]);
+    
     useEffect(() => {
       const token = localStorage.getItem('token');
       if (!token) {
         navigate('/login');
+        setIsLoading(false);
+      } else {
+        validateToken(token);
       }
-    }, [navigate]);
+    }, [navigate, validateToken]);
 
-    return <WrappedComponent {...props} />;
+
+    if (isLoading) {
+      return <div>Loading...</div>; 
+    }
+
+    return isAuthenticated ? <WrappedComponent {...props} /> : null;
   };
 
   return AuthenticatedComponent;
