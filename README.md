@@ -35,6 +35,7 @@ Resume Viewer for Purdue Data Mine Program. Built using React, Express.js, and M
 5. **Start the Backend Server:**
    Open a new terminal and navigate to the Resume-Viewer directory, run the following command:
    ```bash
+   cd server
    node server.js
    ```
 
@@ -51,4 +52,3 @@ Once both the backend and frontend servers are running, navigate to [http://loca
 ## Additional Information
 
 - The backend server will be running on [http://localhost:3000](http://localhost:3000)
-- The frontend server will proxy requests to the backend, so you can make API requests from the frontend to `/api/*` and they will be forwarded to the backend server.
