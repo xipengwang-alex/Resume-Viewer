@@ -11,7 +11,7 @@
   
   .progress-bar {
     height: 100%;
-    background-color: #DAAA00; 
+    background-color: var(--rush);
     transition: width 0.4s ease;
   }
 
@@ -84,8 +84,8 @@
   }
 
   .exam-checkbox input[type="checkbox"]:checked {
-    background-color: #DAAA00;
-    border-color: #DAAA00;
+    background-color: var(--rush);
+    border-color: var(--rush);
   }
 
   .exam-checkbox input[type="checkbox"]:checked::before {
@@ -99,7 +99,7 @@
   }
 
   .exam-checkbox .exam-label {
-    color: #666;
+    color: var(--cool-gray);
   }
   
   .exam-checkbox input[type="checkbox"]:checked + .exam-label {

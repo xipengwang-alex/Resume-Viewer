@@ -42,6 +42,18 @@ app.use('/register', registrationRoutes);
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
 
+app.get('/validateToken', authMiddleware, (req, res) => {
+
+  res.status(200).json({
+    message: 'Token is valid',
+    user: {
+      id: req.user.id,
+      role: req.user.role
+    }
+  });
+});
+
+
 app.get('/resumes', async (req, res) => {
   const profiles = await StudentProfile.find();
   res.json(profiles);

@@ -16,7 +16,7 @@ const withAuth = (WrappedComponent) => {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log('Token is valid:', res.data);
+        //console.log('Token is valid:', res.data);
         setIsAuthenticated(true);
       } catch (error) {
         console.error('Token validation failed:', error);
