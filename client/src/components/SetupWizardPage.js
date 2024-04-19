@@ -67,7 +67,7 @@ function SetupWizardPage() {
       }
 
       // post
-      const response = await axios.post(`${API_BASE_URL}/resumes`, form, {
+      const response = await axios.post(`${API_BASE_URL}/student-profiles`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

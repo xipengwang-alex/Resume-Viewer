@@ -54,7 +54,7 @@ app.get('/validateToken', authMiddleware, (req, res) => {
 });
 
 
-app.get('/resumes', async (req, res) => {
+app.get('/student-profiles', async (req, res) => {
   const profiles = await StudentProfile.find();
   res.json(profiles);
 });
@@ -101,7 +101,7 @@ app.put('/myprofile', authMiddleware, async (req, res) => {
 });
 
     
-app.post('/resumes', authMiddleware, upload.single('resume'), async (req, res) => {
+app.post('/student-profiles', authMiddleware, upload.single('resume'), async (req, res) => {
   try {
     console.log('Request Body:', req.body);
 

@@ -24,7 +24,7 @@ function Resumes() {
 
   
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/resumes`)
+    axios.get(`${API_BASE_URL}/student-profiles`)
       .then(response => {
         setResumes(response.data);
       });
