@@ -143,6 +143,7 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
         user: user.id,
         firstName,
         lastName,
+        isHidden: false,
         gpa,
         graduation,
         major,

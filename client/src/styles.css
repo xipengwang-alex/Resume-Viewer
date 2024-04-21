@@ -220,7 +220,7 @@ button {
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    cursor: default;
+    cursor: pointer;
     margin-right: 20px;
     user-select: none;
   }
@@ -315,3 +315,28 @@ button {
     transform: translateX(100%);
 }
 
+
+.dropdown-menu {
+    position: absolute;
+    right: 10px;
+    top: 60px;
+    background-color:#fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+
+  .dropdown-menu button {
+    color: rgb(0, 0, 0);
+    border: none;
+    cursor: pointer;
+    width: 100px;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  

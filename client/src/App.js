@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import EditProfilePage from './components/EditProfilePage';
 import StudentProfileListPage from './components/StudentProfileListPage';
 import SetupWizardPage from './components/SetupWizardPage';
@@ -47,6 +47,11 @@ function App() {
 function WithTopBarLayout() {
     const [profile, setProfile] = useState(null);
     const [isHidden, setIsHidden] = useState(false);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const navigate = useNavigate();
+    const dropdownRef = useRef(null);
+
+
   
     useEffect(() => {
       const fetchProfile = async () => {
@@ -65,6 +70,25 @@ function WithTopBarLayout() {
   
       fetchProfile();
     }, []);
+
+
+    useEffect(() => {
+      function handleClickOutside(event) {
+          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+              setShowDropdown(false);
+          }
+      }
+
+      if (showDropdown) {
+          document.addEventListener("mousedown", handleClickOutside);
+      }
+
+      return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+      };
+  }, [showDropdown]);
+
+
   
     const getInitials = () => {
       if (profile) {
@@ -90,6 +114,13 @@ function WithTopBarLayout() {
     };
   
 
+    const handleLogout = () => {
+      localStorage.removeItem('token');
+
+      navigate('/login', { replace: true });
+      window.location.reload();
+    };
+
       
 
 
@@ -106,7 +137,7 @@ function WithTopBarLayout() {
               <li><Link to="/landing">Landing Page</Link></li>
             </ul>
             {profile && (
-              <div className="profile-section">
+              <div className="profile-section" onClick={() => setShowDropdown(!showDropdown)}>
 
 
 
@@ -130,6 +161,11 @@ function WithTopBarLayout() {
                 <div className="profile-circle">
                   <span>{getInitials()}</span>
                 </div>
+                {showDropdown && (
+                  <div className="dropdown-menu" ref={dropdownRef}>
+                    <button onClick={handleLogout}>Log Out</button>
+                  </div>
+                )}
               </div>
             )}
           </nav>
