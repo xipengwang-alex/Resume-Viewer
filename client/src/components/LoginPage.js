@@ -29,7 +29,12 @@ function LoginPage() {
       console.log('Token stored:', localStorage.getItem('token'));
       console.log('LoginPage response:', response.data.message); 
       
-      navigate('/landing', { replace: true });
+
+      if (response.data.role === 'student') {
+        navigate('/landing', { replace: true });
+      } else if (response.data.role === 'recruiter') {
+        navigate('/resumes', { replace: true });
+      }
       window.location.reload();
     })
     .catch(error => {

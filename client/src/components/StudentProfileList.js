@@ -33,10 +33,11 @@ function Resumes() {
       });
   }, []);
 
+  /*
   const openResume = (url) => {
     window.open(url, '_blank');
   };
-
+  */
 
   const openStudentProfile = (studentProfile) => {
     navigate('/student-profile', { state: { studentProfile } });

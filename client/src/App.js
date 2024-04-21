@@ -16,12 +16,12 @@ import './styles.css';
 import { API_BASE_URL } from './config';
 
 
-const EditProfilePageWithAuth = withAuth(EditProfilePage);
-const StudentProfileListPageWithAuth = withAuth(StudentProfileListPage);
-const StudentProfilePageWithAuth = withAuth(StudentProfilePage);
-const UserProfilePageWithAuth = withAuth(UserProfilePage);
-const LandingPageWithAuth = withAuth(LandingPage);
-const SetupWizardPageWithAuth = withAuth(SetupWizardPage);
+const EditProfilePageWithAuth = withAuth(EditProfilePage, ['student']);
+const StudentProfileListPageWithAuth = withAuth(StudentProfileListPage, ['recruiter']);
+const StudentProfilePageWithAuth = withAuth(StudentProfilePage, ['recruiter']);
+const UserProfilePageWithAuth = withAuth(UserProfilePage, ['student']);
+const LandingPageWithAuth = withAuth(LandingPage, ['student']);
+const SetupWizardPageWithAuth = withAuth(SetupWizardPage, ['student']);
 
 function App() {
   return (

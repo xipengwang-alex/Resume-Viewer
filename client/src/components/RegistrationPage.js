@@ -18,9 +18,13 @@ function RegistrationPage() {
 
       const response = await axios.post(`${API_BASE_URL}/register`, { username, password, role });
       console.log(response.data.message);
-
       localStorage.setItem('token', response.data.token);
-      navigate('/setup');
+
+      if (role === 'student') {
+        navigate('/setup');
+      } else if (role === 'recruiter') {
+        navigate('/resumes');
+      } 
     } catch (error) {
       setError(error.response.data.message); 
     }

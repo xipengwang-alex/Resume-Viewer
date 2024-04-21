@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../config';
 
-const withAuth = (WrappedComponent) => {
+const withAuth = (WrappedComponent, allowedRoles) => {
   const AuthenticatedComponent = (props) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -16,8 +16,11 @@ const withAuth = (WrappedComponent) => {
             Authorization: `Bearer ${token}`
           }
         });
-        //console.log('Token is valid:', res.data);
-        setIsAuthenticated(true);
+        if (!allowedRoles.includes(res.data.user.role) && res.data.user.role !== 'admin') {
+          //navigate('/unauthorized');
+        } else {
+          setIsAuthenticated(true);
+        }
       } catch (error) {
         console.error('Token validation failed:', error);
         navigate('/login');
@@ -25,6 +28,8 @@ const withAuth = (WrappedComponent) => {
       setIsLoading(false);
     }, [navigate]);
     
+
+
     useEffect(() => {
       const token = localStorage.getItem('token');
       if (!token) {
