@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import EditProfilePage from './components/EditProfilePage';
 import StudentProfileListPage from './components/StudentProfileListPage';
+import StudentProfilePage from './components/StudentProfilePage';
 import SetupWizardPage from './components/SetupWizardPage';
 import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
@@ -17,6 +18,7 @@ import { API_BASE_URL } from './config';
 
 const EditProfilePageWithAuth = withAuth(EditProfilePage);
 const StudentProfileListPageWithAuth = withAuth(StudentProfileListPage);
+const StudentProfilePageWithAuth = withAuth(StudentProfilePage);
 const UserProfilePageWithAuth = withAuth(UserProfilePage);
 const LandingPageWithAuth = withAuth(LandingPage);
 const SetupWizardPageWithAuth = withAuth(SetupWizardPage);
@@ -28,6 +30,7 @@ function App() {
         <Route path="/" element={<WithTopBarLayout />}>
           <Route path="/edit-profile" element={<EditProfilePageWithAuth />} />
           <Route path="/resumes" element={<StudentProfileListPageWithAuth />} />
+          <Route path="/student-profile" element={<StudentProfilePageWithAuth />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegistrationPage />} />
           <Route path="/myprofile" element={<UserProfilePageWithAuth />} />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles.css';
 import { API_BASE_URL } from '../config';
@@ -11,6 +12,8 @@ function Resumes() {
   const [graduationYearFilter, setGraduationYearFilter] = useState('');
   const [sortBy, setSortBy] = useState('fileName');
   const [sortOrder, setSortOrder] = useState('asc');
+  const navigate = useNavigate();
+
 
   function resetFilters() {
     setFilter('');
@@ -32,6 +35,11 @@ function Resumes() {
 
   const openResume = (url) => {
     window.open(url, '_blank');
+  };
+
+
+  const openStudentProfile = (studentProfile) => {
+    navigate('/student-profile', { state: { studentProfile } });
   };
   
   const filteredResumes = resumes.filter(resume =>
@@ -137,7 +145,7 @@ function Resumes() {
                       <td>{resume.gpa || 'N/A'}</td>
                       <td>{resume.graduation || 'N/A'}</td>
                       <td>
-                        <button onClick={() => openResume(`${API_BASE_URL}${resume.resume.filePath}`)}>
+                        <button onClick={() => openStudentProfile(resume)}>
                           View
                         </button>
                       </td>
