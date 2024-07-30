@@ -23,10 +23,31 @@ function SetupWizardPage() {
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
-    }
+    const checkProfileAndRedirect = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${API_BASE_URL}/myprofile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        navigate('/landing');
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          setLoading(false);
+        } else {
+          console.error('Error checking profile:', error);
+          setError('An error occurred. Please try again.');
+          setLoading(false);
+        }
+      }
+    };
+
+    checkProfileAndRedirect();
   }, [navigate]);
 
   const handleFileChange = (file) => {

@@ -28,11 +28,8 @@ function LoginPage() {
       localStorage.setItem('token', response.data.token);
       console.log('Token stored:', localStorage.getItem('token'));
       console.log('LoginPage response:', response.data.message);
-      if (response.data.role === 'student') {
-        navigate('/landing', { replace: true });
-      } else if (response.data.role === 'recruiter') {
-        navigate('/resumes', { replace: true });
-      }
+
+      navigate('/', { replace: true });
       window.location.reload();
     } catch (error) {
       console.error('Login failed:', error);

@@ -22,7 +22,19 @@ function RootRedirect() {
 
         const userRole = response.data.user.role;
         if (userRole === 'student') {
-          navigate('/landing');
+          try {
+            await axios.get(`${API_BASE_URL}/myprofile`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            navigate('/landing');
+          } catch (error) {
+            if (error.response && error.response.status === 404) {
+              navigate('/setup');
+            } else {
+              console.error('Error checking profile:', error);
+              navigate('/login');
+            }
+          }
         } else if (userRole === 'recruiter') {
           navigate('/resumes');
         } else {
