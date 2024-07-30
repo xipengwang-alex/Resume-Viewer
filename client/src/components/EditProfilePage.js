@@ -9,10 +9,14 @@ function EditProfilePageWithAuth() {
   const navigate = useNavigate(); 
   const [formData, setFormData] = useState({ examsPassed: {} });
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const token = localStorage.getItem('token');
         if (token) {
@@ -22,14 +26,16 @@ function EditProfilePageWithAuth() {
             }
           });
           setFormData(res.data);
-
           if (res.data.resume && res.data.resume.filePath) {
             const resumeUrl = `${API_BASE_URL}` + res.data.resume.filePath;
             setFile(resumeUrl);
           }
         }
+        setLoading(false);
       } catch (err) {
         console.error('Failed to fetch profile', err);
+        setError('Failed to load profile. Please try again.');
+        setLoading(false);
       }
     };
 
@@ -45,6 +51,8 @@ function EditProfilePageWithAuth() {
   };
 
   const handleSave = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const token = localStorage.getItem('token');
       const form = new FormData();
@@ -75,9 +83,14 @@ function EditProfilePageWithAuth() {
       navigate('/landing', { state: { showSuccess: true } });
     } catch (error) {
       console.error(error);
+      setError('Failed to save profile. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
     return (
         <div className="edit-profile-page">

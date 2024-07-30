@@ -8,9 +8,13 @@ import { API_BASE_URL } from '../config';
 function UserProfilePage() {
     const navigate = useNavigate(); 
     const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
+            setLoading(true);
+            setError(null);
             try {
                 const res = await axios.get(`${API_BASE_URL}/myprofile`, {
                     headers: {
@@ -19,9 +23,12 @@ function UserProfilePage() {
                 });
                 setProfile(res.data);
             } catch (err) {
-                console.error('Failed to fetch profile', err);
-            }
-        };
+                    console.error('Failed to fetch profile', err);
+                    setError('Failed to load profile. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
 
         fetchProfile();
     }, []);
@@ -33,7 +40,11 @@ function UserProfilePage() {
     
     return (
         <div className="edit-profile-page">
-            {profile ? (
+            {loading ? (
+                <div>Loading profile...</div>
+            ) : error ? (
+                <div>{error}</div>
+            ) : profile ? (
                 <>
                     <Setup2
                     formData={profile}
@@ -48,11 +59,11 @@ function UserProfilePage() {
                     readOnly={true} 
                     />
                     <div className="button-container">
-                        <button className="button black" onClick={handleBack}>Back</button>
+                    <button className="button black" onClick={handleBack}>Back</button>
                     </div>
                 </>
             ) : (
-                <p>Retrieving your profile...</p>
+                <p>No profile found.</p>
             )}
         </div>
     );

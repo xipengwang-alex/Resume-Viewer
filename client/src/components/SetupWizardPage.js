@@ -13,11 +13,12 @@ function SetupWizardPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({ examsPassed: {} });
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const totalSteps = 4; 
   const stepIndicator = `${currentStep-1}/${totalSteps-2}`;
   const navigate = useNavigate(); 
-
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -25,7 +26,6 @@ function SetupWizardPage() {
       navigate('/login');
     }
   }, [navigate]);
-
 
   const handleFileChange = (file) => {
     setFile(file);
@@ -48,6 +48,8 @@ function SetupWizardPage() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const token = localStorage.getItem('token');
       const form = new FormData();
@@ -66,7 +68,6 @@ function SetupWizardPage() {
         form.append('resume', file);
       }
 
-      // post
       const response = await axios.post(`${API_BASE_URL}/student-profiles`, form, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -75,12 +76,17 @@ function SetupWizardPage() {
       });
 
       console.log(response.data.message); 
-
       navigate('/landing', { state: { showSuccess: true } });
     } catch (error) {
       console.error(error);
+      setError('Failed to submit profile. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) return <div>Submitting profile...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="setup-wizard">
@@ -112,4 +118,5 @@ function SetupWizardPage() {
     </div>
   );
 }
+
 export default SetupWizardPage;
