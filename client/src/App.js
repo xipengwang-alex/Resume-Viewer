@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import RootRedirect from './components/RootRedirect';
 import EditProfilePage from './components/EditProfilePage';
@@ -56,6 +57,36 @@ function WithTopBarLayout() {
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const location = useLocation();
+
+  let title = 'Resume Viewer';
+  switch (location.pathname) {
+    case '/login':
+    case '/register':
+      title = 'Resume Viewer';
+      break;
+    case '/edit-profile':
+      title = 'Edit Your Profile';
+      break;
+    case '/resumes':
+      title = 'Search Resume Book';
+      break;
+    case '/myprofile':
+      title = 'My Profile';
+      break;
+    case '/landing':
+      title = 'Landing Page';
+      break;
+    case '/setup':
+      title = 'Setup Wizard';
+      break;
+    case '/student-profile':
+      title = 'Student Profile';
+      break;
+    default:
+      title = 'Resume Viewer';
+  }
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -133,6 +164,49 @@ function WithTopBarLayout() {
     window.location.reload();
   };
 
+
+  return (
+    <div className="App">
+      <nav className="topbar">
+        <ul>
+          <li className="topbar-title">{title}</li>
+        </ul>
+        {profile && (
+          <div className="profile-section" onClick={() => setShowDropdown(!showDropdown)}>
+            {profile.role === 'student' && (
+              <label className="toggle" htmlFor="myToggle">
+                <input 
+                  className="toggle__input"
+                  type="checkbox" 
+                  id="myToggle"
+                  checked={!isHidden}
+                  onChange={handleToggle}
+                />
+                <div className="toggle__fill">
+                  <span className="toggle__text toggle__text--on">Profile Visible</span>
+                  <span className="toggle__text toggle__text--off">Profile Hidden</span>
+                </div>
+              </label>
+            )}
+            <div className="profile-circle">
+              <span>{getInitials()}</span>
+            </div>
+            {showDropdown && (
+              <div className="dropdown-menu" ref={dropdownRef}>
+                <button onClick={handleLogout}>Log Out</button>
+              </div>
+            )}
+          </div>
+        )}
+      </nav>
+      <div className="content">
+        <Outlet />
+      </div>
+    </div>
+  );
+}
+
+/*
   return (
     <div className="App">
       <nav className="topbar">
@@ -179,7 +253,7 @@ function WithTopBarLayout() {
     </div>
   );
 }
-
+*/
 
 /* 
 

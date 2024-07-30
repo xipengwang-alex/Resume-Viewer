@@ -31,7 +31,7 @@ function SetupWizardPage() {
       }
 
       try {
-        const response = await axios.get(`${API_BASE_URL}/myprofile`, {
+        await axios.get(`${API_BASE_URL}/myprofile`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
