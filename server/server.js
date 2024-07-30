@@ -74,7 +74,6 @@ app.get('/myprofile', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-
     const profile = await StudentProfile.findOne({ user: req.user.id }); 
     if (!profile) {
         return res.status(404).json({ message: 'Profile not found' });

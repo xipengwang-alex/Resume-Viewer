@@ -4,7 +4,7 @@ import axios from 'axios';
 import '../styles.css';
 import { API_BASE_URL } from '../config';
 
-function Resumes() {
+function StudentProfileList() {
   const [resumes, setResumes] = useState([]);
   const [nameFilter, setFilter] = useState('');
   const [majorFilter, setMajorFilter] = useState('');
@@ -12,6 +12,8 @@ function Resumes() {
   const [graduationYearFilter, setGraduationYearFilter] = useState('');
   const [sortBy, setSortBy] = useState('fileName');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
 
@@ -25,11 +27,22 @@ function Resumes() {
   }
   
 
-  
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/student-profiles`)
+    const token = localStorage.getItem('token');
+    setLoading(true);
+    axios.get(`${API_BASE_URL}/student-profiles`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(response => {
         setResumes(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching profiles:', error);
+        setError('Failed to fetch profiles. Please try again.');
+        setLoading(false);
       });
   }, []);
 
@@ -78,7 +91,9 @@ function Resumes() {
     return 0;
   });
 
-
+  if (loading) return <div>Loading profiles...</div>;
+  if (error) return <div>{error}</div>;
+  
   return (
     <div>
         <div className="filters">
@@ -159,4 +174,4 @@ function Resumes() {
   );
 }
 
-export default Resumes;
+export default StudentProfileList;
