@@ -3,6 +3,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import RootRedirect from './components/RootRedirect';
 import EditProfilePage from './components/EditProfilePage';
 import StudentProfileListPage from './components/StudentProfileListPage';
 import StudentProfilePage from './components/StudentProfilePage';
@@ -28,6 +29,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<RootRedirect />} />
         <Route path="/" element={<WithTopBarLayout />}>
           <Route path="/edit-profile" element={<EditProfilePageWithAuth />} />
           <Route path="/resumes" element={<StudentProfileListPageWithAuth />} />
