@@ -24,6 +24,7 @@ const authMiddleware = require('./middleware/authMiddleware');
 const loginRoutes = require('./routes/loginRoutes');
 const registrationRoutes = require('./routes/registrationRoutes');
 const StudentProfile = require('./models/StudentProfile');
+const RecruiterProfile = require('./models/RecruiterProfile');
 const User = require('./models/User');
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -62,6 +63,23 @@ app.get('/student-profiles', authMiddleware, async (req, res) => {
     }
     const profiles = await StudentProfile.find();
     res.json(profiles);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/recruiter-profile', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role !== 'recruiter') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const profile = await RecruiterProfile.findOne({ user: req.user.id });
+    if (!profile) {
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+    res.json(profile);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

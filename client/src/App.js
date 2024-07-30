@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import EditProfilePage from './components/EditProfilePage';
@@ -48,136 +49,134 @@ function App() {
 
 
 function WithTopBarLayout() {
-    const [profile, setProfile] = useState(null);
-    const [isHidden, setIsHidden] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false);
-    const navigate = useNavigate();
-    const dropdownRef = useRef(null);
+  const [profile, setProfile] = useState(null);
+  const [isHidden, setIsHidden] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
-
-  
-    useEffect(() => {
-      const fetchProfile = async () => {
-        try {
-          const res = await axios.get(`${API_BASE_URL}/myprofile`, {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const decodedToken = jwtDecode(token);
+          const profileEndpoint = decodedToken.role === 'student' ? '/myprofile' : '/recruiter-profile';
+          
+          const res = await axios.get(`${API_BASE_URL}${profileEndpoint}`, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`
+              Authorization: `Bearer ${token}`
             }
           });
-          setProfile(res.data);
-          setIsHidden(res.data.isHidden);
-        } catch (err) {
-          console.error('Failed to fetch profile', err);
-        }
-      };
-  
-      fetchProfile();
-    }, []);
-
-
-    useEffect(() => {
-      function handleClickOutside(event) {
-          if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-              setShowDropdown(false);
+          setProfile({ ...res.data, role: decodedToken.role });
+          if (decodedToken.role === 'student') {
+            setIsHidden(res.data.isHidden);
           }
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
       }
+    };
 
-      if (showDropdown) {
-          document.addEventListener("mousedown", handleClickOutside);
+    fetchProfile();
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
       }
+    }
 
-      return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
-      };
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [showDropdown]);
 
-
-  
-    const getInitials = () => {
-      if (profile) {
+  const getInitials = () => {
+    if (profile) {
+      if (profile.role === 'student') {
         const { firstName, lastName } = profile;
         return `${firstName.charAt(0)}${lastName.charAt(0)}`;
+      } else {
+        return profile.username ? profile.username.charAt(0).toUpperCase() : 'R';
       }
-      return '';
-    };
+    }
+    return '';
+  };
 
+  const handleToggle = async () => {
+    if (profile.role !== 'student') return;
+    
+    const isProfileVisible = !isHidden; 
+    try {
+      await axios.put(`${API_BASE_URL}/myprofile`, { isHidden: isProfileVisible }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setIsHidden(isProfileVisible);
+    } catch (err) {
+      console.error('Failed to update profile visibility', err);
+    }
+  };
 
-    const handleToggle = async () => {
-      const isProfileVisible = !isHidden; 
-      try {
-        await axios.put(`${API_BASE_URL}/myprofile`, { isHidden: isProfileVisible }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        setIsHidden(isProfileVisible);
-      } catch (err) {
-        console.error('Failed to update profile visibility', err);
-      }
-    };
-  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login', { replace: true });
+    window.location.reload();
+  };
 
-    const handleLogout = () => {
-      localStorage.removeItem('token');
-
-      navigate('/login', { replace: true });
-      window.location.reload();
-    };
-
-      
-
-
-    return (
-        <div className="App">
-          <nav className="topbar">
-            <ul>
-              <li><Link to="/edit-profile">Edit Profile</Link></li>
-              <li><Link to="/resumes">View Resumes</Link></li>
-              <li><Link to="/setup">Setup Wizard</Link></li>
-              <li><Link to="/login">Login</Link></li>
-              <li><Link to="/register">Register</Link></li>
-              <li><Link to="/myprofile">My Profile</Link></li>
-              <li><Link to="/landing">Landing Page</Link></li>
-            </ul>
-            {profile && (
-              <div className="profile-section" onClick={() => setShowDropdown(!showDropdown)}>
-
-
-
+  return (
+    <div className="App">
+      <nav className="topbar">
+        <ul>
+          <li><Link to="/edit-profile">Edit Profile</Link></li>
+          <li><Link to="/resumes">View Resumes</Link></li>
+          <li><Link to="/setup">Setup Wizard</Link></li>
+          <li><Link to="/login">Login</Link></li>
+          <li><Link to="/register">Register</Link></li>
+          <li><Link to="/myprofile">My Profile</Link></li>
+          <li><Link to="/landing">Landing Page</Link></li>
+        </ul>
+        {profile && (
+          <div className="profile-section" onClick={() => setShowDropdown(!showDropdown)}>
+            {profile.role === 'student' && (
               <label className="toggle" htmlFor="myToggle">
-                  <input 
-                      className="toggle__input"
-                      type="checkbox" 
-                      id="myToggle"
-                      checked={!isHidden}
-                      onChange={handleToggle}
-                  />
-                  <div className="toggle__fill">
-                      <span className="toggle__text toggle__text--on">Profile Visible</span>
-                      <span className="toggle__text toggle__text--off">Profile Hidden</span>
-                  </div>
-              </label>
-
-
-
-
-                <div className="profile-circle">
-                  <span>{getInitials()}</span>
+                <input 
+                  className="toggle__input"
+                  type="checkbox" 
+                  id="myToggle"
+                  checked={!isHidden}
+                  onChange={handleToggle}
+                />
+                <div className="toggle__fill">
+                  <span className="toggle__text toggle__text--on">Profile Visible</span>
+                  <span className="toggle__text toggle__text--off">Profile Hidden</span>
                 </div>
-                {showDropdown && (
-                  <div className="dropdown-menu" ref={dropdownRef}>
-                    <button onClick={handleLogout}>Log Out</button>
-                  </div>
-                )}
+              </label>
+            )}
+            <div className="profile-circle">
+              <span>{getInitials()}</span>
+            </div>
+            {showDropdown && (
+              <div className="dropdown-menu" ref={dropdownRef}>
+                <button onClick={handleLogout}>Log Out</button>
               </div>
             )}
-          </nav>
-          <div className="content">
-            <Outlet />
           </div>
-        </div>
-      );
-    }
+        )}
+      </nav>
+      <div className="content">
+        <Outlet />
+      </div>
+    </div>
+  );
+}
 
 
 /* 

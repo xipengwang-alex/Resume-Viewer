@@ -30,11 +30,13 @@ const steps = [
 ];
 
 function Setup1({ formData, setFormData }) {
+    /*
     // handle change event for form elements
     const handleChange = (e) => {
       const { name, value } = e.target;
       setFormData({ ...formData, [name]: value });
     };
+    */
 
   return (
     <div className="content">
