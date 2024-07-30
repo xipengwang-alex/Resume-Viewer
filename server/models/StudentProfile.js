@@ -33,6 +33,7 @@ const StudentProfileSchema = new mongoose.Schema({
   resume: {
     filePath: String,
     uploadedAt: { type: Date, default: Date.now },
+    required: true
   }
 }, { collection: 'student_profiles' });
 

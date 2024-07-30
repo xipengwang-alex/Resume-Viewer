@@ -15,6 +15,8 @@ function SetupWizardPage() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isStep2Valid, setIsStep2Valid] = useState(false);
+  const [isStep3Valid, setIsStep3Valid] = useState(false);
 
   const totalSteps = 4; 
   const stepIndicator = `${currentStep-1}/${totalSteps-2}`;
@@ -32,6 +34,14 @@ function SetupWizardPage() {
   };
 
   const nextStep = () => {
+    if (currentStep === 2 && !isStep2Valid) {
+      alert("Please fill in all required fields before proceeding.");
+      return;
+    }
+    if (currentStep === 3 && !isStep3Valid) {
+      alert("Please fill in all required fields before proceeding.");
+      return;
+    }
     setCurrentStep(currentStep >= totalSteps ? totalSteps : currentStep + 1);
   };
 
@@ -48,6 +58,10 @@ function SetupWizardPage() {
   };
 
   const handleSubmit = async () => {
+    if (!isStep2Valid || !isStep3Valid) {
+      alert("Please fill in all required fields before submitting.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -92,8 +106,8 @@ function SetupWizardPage() {
     <div className="setup-wizard">
       <SetupProgressBar currentStep={currentStep} totalSteps={totalSteps} />
       {currentStep === 1 && <Setup1 formData={formData} setFormData={setFormData} />}
-      {currentStep === 2 && <Setup2 formData={formData} setFormData={setFormData} handleFileChange={handleFileChange} />}
-      {currentStep === 3 && <Setup3 formData={formData} setFormData={setFormData} />}
+      {currentStep === 2 && <Setup2 formData={formData} setFormData={setFormData} handleFileChange={handleFileChange} onValidityChange={setIsStep2Valid} />}
+      {currentStep === 3 && <Setup3 formData={formData} setFormData={setFormData} onValidityChange={setIsStep3Valid} />}
       {currentStep === 4 && <Setup4 formData={formData} setFormData={setFormData} />}
       
       <div className="navigation-container setup">
@@ -110,9 +124,9 @@ function SetupWizardPage() {
         ) : currentStep === totalSteps ? (
           <button className="button gold" onClick={handleEditProfile}>View Profile</button>
         ) : currentStep === totalSteps - 1 ? (
-          <button className="button gold" onClick={handleSubmit}>Submit</button>
+          <button className="button gold" onClick={handleSubmit} disabled={!isStep2Valid || !isStep3Valid}>Submit</button>
         ) : (
-          <button className="button gold" onClick={nextStep}>Next</button>
+          <button className="button gold" onClick={nextStep} disabled={(currentStep === 2 && !isStep2Valid) || (currentStep === 3 && !isStep3Valid)}>Next</button>
         )}
       </div>
     </div>
