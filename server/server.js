@@ -3,7 +3,8 @@ const cors = require('cors');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
-global.secretKey = 'secretKey';
+require('dotenv').config();
+global.secretKey = process.env.JWT_SECRET;
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -17,8 +18,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const uri = "mongodb+srv://wangx:a2UKOohXAiXd05iC@us-east-serverlessinsta.cnthoht.mongodb.net/resume_viewer?retryWrites=true&w=majority&appName=US-East-ServerlessInstance";
-//TODO: Add environment variables for the connection string and JWT secret key
+const uri = process.env.MONGODB_URI;
 
 const authMiddleware = require('./middleware/authMiddleware');
 const loginRoutes = require('./routes/loginRoutes');
@@ -27,7 +27,7 @@ const StudentProfile = require('./models/StudentProfile');
 const RecruiterProfile = require('./models/RecruiterProfile');
 const User = require('./models/User');
 
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, ssl: true })
   .then(() => console.log("Mongoose is connected"))
   .catch(e => console.log("could not connect", e));
 
