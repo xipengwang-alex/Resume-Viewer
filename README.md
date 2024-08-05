@@ -5,9 +5,12 @@ Resume Viewer for Purdue Data Mine Program. Built using React, Express.js, and M
 
 - Node.js (v18.12.1 or later)
 - npm (v8.19.2 or later)
-- A MongoDB instance running locally or accessible over the network
+- A MongoDB instance accessible over the network
+- Anaconda 
 
 ## Setup
+
+First, create a new conda environment and activate it. 
 
 1. **Clone the repository:**
    ```bash
@@ -51,4 +54,4 @@ Once both the backend and frontend servers are running, navigate to [http://loca
 
 ## Additional Information
 
-- The backend server will be running on [http://localhost:3000](http://localhost:3000)
+The backend server will be running on [http://localhost:3000](http://localhost:3000)

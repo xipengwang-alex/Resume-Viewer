@@ -1,7 +1,7 @@
 import React from 'react';
 import StudentProfileList from './StudentProfileList';
 
-function ResumesPage() {
+function StudentProfileListPage() {
     return (
         <div className="resumes-page">
             <StudentProfileList />
@@ -9,6 +9,6 @@ function ResumesPage() {
     );
 }
 
-export default ResumesPage;
+export default StudentProfileListPage;
 
 

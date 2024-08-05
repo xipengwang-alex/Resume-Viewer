@@ -23,20 +23,24 @@ export const exams = [
   ];
   
 
-function Setup2({ formData, setFormData, header = 1, handleFileChange, file, readOnly = false, className }) {
-
-  const [selectedFile, setSelectedFile] = useState(null);
+function Setup2({ formData, setFormData, header = 1, handleFileChange, file, readOnly = false, className, onValidityChange }) {
   const numExamsPassed = Object.values(formData.examsPassed).filter(Boolean).length;
+  const [selectedFile, setSelectedFile] = useState(null);
       
 
   useEffect(() => {
     if (file) {
       setSelectedFile(file);
     }
-  }, [file]);
+    const { firstName, lastName, graduation, major } = formData;
+    const isValid = firstName && lastName && graduation && major && (selectedFile || file);
 
-
+    if (onValidityChange) {
+      onValidityChange(isValid);
+    }
+  }, [file, formData, selectedFile, onValidityChange]);
   
+
   const handleChange = (e) => {
     if (!readOnly) {
       const { name, value, type, checked } = e.target;
@@ -80,7 +84,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
         <div className="input-group">
           <div className="input-container">
 
-            <label htmlFor="firstName">First Name:</label>
+            <label htmlFor="firstName">First Name*:</label>
             <input 
                 type="text" 
                 name="firstName" 
@@ -92,7 +96,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
           </div>
           <div className="input-container">
         
-            <label htmlFor="lastName">Last Name:</label>
+            <label htmlFor="lastName">Last Name*:</label>
             <input 
                 type="text" 
                 name="lastName" 
@@ -105,7 +109,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
         </div>
         <div className="input-group">
           <div className="input-container">
-            <label htmlFor="graduation">Expected Graduation:</label>
+            <label htmlFor="graduation">Expected Graduation*:</label>
             <select 
                 name="graduation" 
                 value={formData.graduation || ""} 
@@ -123,7 +127,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
           </div>
           <div className="input-container">
             
-            <label htmlFor="major">Major:</label>
+            <label htmlFor="major">Major*:</label>
             <select 
                 name="major" 
                 value={formData.major || ""} 
@@ -207,7 +211,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
                 <p className="selected-file-name">Selected file: {typeof selectedFile === 'string' ? selectedFile.split('/').pop() : selectedFile.name}</p>
               ) : (
                 <>
-                  <h1>Upload a new resume from device</h1>
+                  <h1>Upload a new resume from device*</h1>
                   <p>or drag and drop resume</p>
                 </>
               )}

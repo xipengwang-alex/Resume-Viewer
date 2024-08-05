@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const StudentProfileSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true},
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   isHidden: { type: Boolean, default: false },
@@ -33,6 +33,7 @@ const StudentProfileSchema = new mongoose.Schema({
   resume: {
     filePath: String,
     uploadedAt: { type: Date, default: Date.now },
+    required: true
   }
 }, { collection: 'student_profiles' });
 

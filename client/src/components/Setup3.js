@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SetupHeader from './SetupHeader';
 
-function Setup3({ formData, setFormData, header = 1, readOnly = false,  className }) {
+function Setup3({ formData, setFormData, header = 1, readOnly = false, className, onValidityChange }) {
+  
+  useEffect(() => {
+    const { willNeedSponsorship, sponsorshipTimeframe, opportunityType, pastInternships, gpa } = formData;
+    const isValid = willNeedSponsorship && sponsorshipTimeframe && opportunityType && pastInternships && gpa;
+    if (onValidityChange) {
+      onValidityChange(isValid);
+    }
+  }, [formData, onValidityChange]);
+
+  
   const handleChange = (e) => {
     if (!readOnly) {
       const { name, value } = e.target;
