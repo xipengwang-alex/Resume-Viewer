@@ -134,7 +134,7 @@ function WithTopBarLayout() {
     if (profile) {
       if (profile.role === 'student') {
         const { firstName, lastName } = profile;
-        return `${firstName.charAt(0)}${lastName.charAt(0)}`;
+        return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`;
       } else {
         return profile.username ? profile.username.charAt(0).toUpperCase() : 'R';
       }

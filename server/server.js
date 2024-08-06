@@ -48,13 +48,6 @@ app.use('/login', loginRoutes);
 app.use('/register', registrationRoutes);
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
-});
-
-
 
 app.get('/validateToken', authMiddleware, (req, res) => {
 
@@ -209,6 +202,16 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  });
+} 
 
 
 

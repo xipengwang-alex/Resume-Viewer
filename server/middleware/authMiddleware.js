@@ -11,6 +11,7 @@ const authMiddleware = (req, res, next) => {
   try {
 
     const decoded = jwt.verify(token.split(' ')[1], global.secretKey);
+    //console.log('Decoded token:', decoded);
     req.user = decoded;
     req.user.role = decoded.role;
     next();
