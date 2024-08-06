@@ -1,3 +1,4 @@
 node_modules/
 all_files_content.txt
 .env
+/build

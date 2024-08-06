@@ -48,7 +48,11 @@ app.use('/login', loginRoutes);
 app.use('/register', registrationRoutes);
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
+app.use(express.static(path.join(__dirname, '../client/build')));
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 
 
 
