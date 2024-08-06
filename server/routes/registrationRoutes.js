@@ -6,7 +6,8 @@ const jwt = require('jsonwebtoken');
 
 router.post('/', async (req, res) => {
   try {
-    const { username, password, role } = req.body;
+    //const { username, password, role } = req.body;
+    const { username, password } = req.body;
 
     const existingUser = await User.findOne({ username });
 
@@ -21,7 +22,8 @@ router.post('/', async (req, res) => {
     const newUser = new User({
       username,
       password: hashedPassword,
-      role,
+      role: 'student',
+      //role,
     });
 
     

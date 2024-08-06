@@ -6,7 +6,7 @@ import { API_BASE_URL } from '../config';
 function RegistrationPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
+  //const [role, setRole] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -16,7 +16,8 @@ function RegistrationPage() {
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post(`${API_BASE_URL}/register`, { username, password, role });
+      //const response = await axios.post(`${API_BASE_URL}/register`, { username, password, role });
+      const response = await axios.post(`${API_BASE_URL}/register`, { username, password });
       console.log(response.data.message);
       localStorage.setItem('token', response.data.token);
 
@@ -27,6 +28,10 @@ function RegistrationPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLoginRedirect = () => {
+    navigate('/login');
   };
 
   return (
@@ -56,20 +61,8 @@ function RegistrationPage() {
               required
             />
           </div>
-          <div>
-            <label htmlFor="role">Role:</label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              required
-            >
-              <option value="">Select Role</option>
-              <option value="student">Student</option>
-              <option value="recruiter">Recruiter</option>
-            </select>
-          </div>
           <button type="submit" disabled={loading}>Register</button>
+          <button type="button" onClick={handleLoginRedirect}>Return to Login</button>
         </form>
       )}
       {error && <p className="error-message">{error}</p>}

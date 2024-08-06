@@ -65,7 +65,7 @@ function LoginPage() {
             />
           </div>
           <button type="submit" disabled={loading}>Login</button>
-          <button type="button" onClick={() => navigate('/register')} disabled={loading}>Register</button>
+          <button type="button" onClick={() => navigate('/register')} disabled={loading}>Register New Student</button>
         </form>
       )}
       {error && <p className="error-message">{error}</p>}
