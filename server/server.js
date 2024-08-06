@@ -33,7 +33,15 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, ssl: tr
 
 
 const app = express();
-app.use(cors());
+
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.API_BASE_URL 
+    : true,
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/login', loginRoutes);
@@ -201,5 +209,5 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
 
 
 app.listen(3000, '0.0.0.0', () => {
-  console.log('Server is running on http://localhost:3000');
+  console.log(`Server is running on ${process.env.API_BASE_URL}`);
 });
