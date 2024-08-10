@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Resume Viewer",
+  "name": "Resume Viewer",
   "icons": [
     {
       "src": "favicon.ico",

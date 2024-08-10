@@ -36,7 +36,7 @@ function RegistrationPage() {
 
   return (
     <div>
-      <h2>Registration</h2>
+      <h2>Register New Student</h2>
       {loading ? (
         <div>Registering...</div>
       ) : (
