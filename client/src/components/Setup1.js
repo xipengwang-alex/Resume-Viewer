@@ -15,7 +15,7 @@ const steps = [
   },
   {
     number: '2',
-    description: 'Update your information and resume at your convenience.',
+    description: 'Update your information and resume whenever you achieve significant milestones.',
   },
   {
     number: '3',
@@ -25,7 +25,7 @@ const steps = [
   {
     number: '4',
     description:
-      "Recruiter's can now more quickly navigate and filter student resumes to find their perfect fit for their role.",
+      "Recruiters can now conveniently access your professional profile through this Resume Book. Please monitor your email inbox, as companies may reach out to you.",
   },
 ];
 
@@ -42,8 +42,7 @@ function Setup1({ formData, setFormData }) {
     <div className="content">
         <h1>What's Changed</h1>
         <h3>
-          Welcome to our updated Resume Book. This is the number one location <br /> to search for
-          jobs and get in touch with recruiters.
+          Welcome to the Resume Book! Please follow the instructions below <br/> to ensure recruiters can access your updated profile.
         </h3>
         {steps.map((step, index) => (
           <StepCard key={index} number={step.number} description={step.description} />

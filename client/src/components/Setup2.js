@@ -32,13 +32,24 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     if (file) {
       setSelectedFile(file);
     }
-    const { firstName, lastName, graduation, major } = formData;
-    const isValid = firstName && lastName && graduation && major && (selectedFile || file);
+    
+    const { firstName, lastName, graduation } = formData;
+    const isValid = firstName && lastName && graduation && (selectedFile || file);
+    
+    //const { firstName, lastName, graduation, major } = formData;
+    //const isValid = firstName && lastName && graduation && major && (selectedFile || file);
 
     if (onValidityChange) {
       onValidityChange(isValid);
     }
-  }, [file, formData, selectedFile, onValidityChange]);
+
+    if (!formData.major && setFormData) {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        major: "ACTSCI"
+      }));
+    }
+  }, [file, formData, selectedFile, onValidityChange, setFormData]);
   
 
   const handleChange = (e) => {
@@ -125,8 +136,8 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
                 <option value="2024">2024</option>
             </select>
           </div>
+          {/* 
           <div className="input-container">
-            
             <label htmlFor="major">Major*:</label>
             <select 
                 name="major" 
@@ -142,6 +153,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
               <option value="CS">Computer Science</option> 
             </select>
           </div>
+          */}
         </div>
 
         <label htmlFor="skills">Passed Exams:</label>

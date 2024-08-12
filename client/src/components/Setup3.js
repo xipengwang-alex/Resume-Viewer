@@ -25,7 +25,7 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false, className
       <div className="questions">
         {/* Question 1 */}
         <div className="question">
-          <p>1. Will you need sponsorship?</p>
+          <p>1. Do you require sponsorship to work in the U.S.?</p>
           <select
             name="willNeedSponsorship"
             value={formData.willNeedSponsorship || ''}
@@ -38,7 +38,7 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false, className
             <option value="notSure">Not Sure</option>
           </select>
         </div>
-
+      
         {/* Question 2 */}
         <div className="question">
           <p>2. Do you need sponsorship now or in the future?</p>
@@ -72,7 +72,7 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false, className
 
         {/* Question 4 */}
         <div className="question">
-          <p>4. Have you had internships in the past?</p>
+          <p>4. Have you completed at least one actuarial related internship in the past?</p>
           <select
             name="pastInternships"
             value={formData.pastInternships || ''}

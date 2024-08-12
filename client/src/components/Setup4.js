@@ -10,12 +10,13 @@ function Setup4({ formData, setFormData, showSuccess = false}) {
       
       {showSuccess && <p>Success!</p>}
 
-      <p>Thank You for Uploading Your Resume!</p>
-
-      <p>View the Actuarial Science Website <a href="https://web.ics.purdue.edu/~actuary/recruitment.html" target="_blank" rel="noopener noreferrer">Here</a>.</p>
+      <p>Thank you for completing your profile in Resume Book!</p>
 
     </div>
   );
 }
 
 export default Setup4;
+
+
+//<p>View the Actuarial Science Website <a href="https://web.ics.purdue.edu/~actuary/recruitment.html" target="_blank" rel="noopener noreferrer">Here</a>.</p>
