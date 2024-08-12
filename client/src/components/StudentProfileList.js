@@ -7,7 +7,7 @@ import { API_BASE_URL } from '../config';
 function StudentProfileList() {
   const [resumes, setResumes] = useState([]);
   const [nameFilter, setFilter] = useState('');
-  const [majorFilter, setMajorFilter] = useState('');
+  const [majorFilter, setMajorFilter] = useState('ACTSCI');
   const [gpaFilter, setGpaFilter] = useState('');
   const [graduationYearFilter, setGraduationYearFilter] = useState('');
   const [sortBy, setSortBy] = useState('fileName');
@@ -21,7 +21,7 @@ function StudentProfileList() {
     setFilter('');
     setGpaFilter('');
     setGraduationYearFilter('');
-    setMajorFilter('');
+    setMajorFilter('ACTSCI');
     setSortBy('year');
     setSortOrder('asc');
   }
@@ -104,6 +104,7 @@ function StudentProfileList() {
                 onChange={(e) => setFilter(e.target.value)}
                 style={{ width: '150px' }}
             />
+            {/*
             <input
                 type="text"
                 placeholder="Major"
@@ -111,6 +112,7 @@ function StudentProfileList() {
                 onChange={(e) => setMajorFilter(e.target.value)}
                 style={{ width: '150px' }}
             />
+            */}
             <input
                 type="number"
                 placeholder="GPA"
@@ -147,7 +149,7 @@ function StudentProfileList() {
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Major</th>
+                        {/*<th>Major</th>*/}
                         <th>GPA</th>
                         <th>Expected Graduation</th>
                         <th>Actions</th>
@@ -157,7 +159,7 @@ function StudentProfileList() {
                   {sortedResumes.map((resume, index) => (
                     <tr key={index}>
                       <td>{`${resume.firstName} ${resume.lastName}`}</td>
-                      <td>{resume.major || 'N/A'}</td>
+                      {/*<td>{resume.major || 'N/A'}</td>*/}
                       <td>{resume.gpa || 'N/A'}</td>
                       <td>{resume.graduation || 'N/A'}</td>
                       <td>
