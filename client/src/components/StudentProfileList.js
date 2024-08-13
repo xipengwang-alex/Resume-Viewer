@@ -10,6 +10,7 @@ function StudentProfileList() {
   const [majorFilter, setMajorFilter] = useState('ACTSCI');
   const [undergradYearFilter, setUndergradYearFilter] = useState('');
   //const [graduationYearFilter, setGraduationYearFilter] = useState('');
+  const [examsPassedFilter, setExamsPassedFilter] = useState('');
   const [gpaFilter, setGpaFilter] = useState('');
   const [sortBy, setSortBy] = useState('graduationYear');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -22,6 +23,7 @@ function StudentProfileList() {
     setFilter('');
     setUndergradYearFilter('');
     //setGraduationYearFilter('');
+    setExamsPassedFilter('');
     setGpaFilter('');
     setMajorFilter('ACTSCI');
     setSortBy('graduationYear');
@@ -58,6 +60,10 @@ function StudentProfileList() {
     navigate('/student-profile', { state: { studentProfile } });
   };
   
+  const countExamsPassed = (examsPassed) => {
+    return Object.values(examsPassed).filter(Boolean).length;
+  };
+
   const filteredResumes = resumes.filter(resume =>
     `${resume.firstName} ${resume.lastName}`
       .toLowerCase()
@@ -65,6 +71,7 @@ function StudentProfileList() {
       (resume.major ? resume.major.toLowerCase().includes(majorFilter.toLowerCase()) : true) &&
       (undergradYearFilter === '' || resume.undergradYear === undergradYearFilter) &&
       //(graduationYearFilter === '' || (resume.graduation.toString() === graduationYearFilter)) &&
+      (examsPassedFilter === '' || countExamsPassed(resume.examsPassed) >= parseInt(examsPassedFilter, 10)) &&
       (gpaFilter === '' || (resume.gpa >= gpaFilter)) 
   );
   
@@ -77,7 +84,7 @@ function StudentProfileList() {
         if (!graduation) return '';
         const [term, year] = graduation.split(' ');
         const termValue = term === 'Spring' ? '1' : (term === 'Fall' ? '2' : '0');
-        console.log(`${year || '0000'}${termValue}`);
+        //console.log(`${year || '0000'}${termValue}`);
         return `${year || '0000'}${termValue}`;
       };
   
@@ -92,6 +99,9 @@ function StudentProfileList() {
     } else if (sortBy === 'uploadedAt') {
       aValue = new Date(a.resume.uploadedAt);
       bValue = new Date(b.resume.uploadedAt);
+    } else if (sortBy === 'examsPassed') {
+      aValue = countExamsPassed(a.examsPassed);
+      bValue = countExamsPassed(b.examsPassed);
     } else {
       aValue = a[sortBy];
       bValue = b[sortBy];
@@ -146,6 +156,15 @@ function StudentProfileList() {
             */}
             <input
                 type="number"
+                placeholder="Exams"
+                value={examsPassedFilter}
+                onChange={(e) => setExamsPassedFilter(e.target.value)}
+                min="0"
+                max="16"
+                style={{ width: '150px' }}
+            />
+            <input
+                type="number"
                 placeholder="GPA"
                 value={gpaFilter}
                 onChange={(e) => setGpaFilter(e.target.value)}
@@ -156,8 +175,9 @@ function StudentProfileList() {
             />
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                 <option value="graduationYear">Sort by Graduation Year</option>
+                <option value="examsPassed">Sort by Exams Passed</option>
                 <option value="gpa">Sort by GPA</option>
-                <option value="last name">Sort by Last Name</option>
+                <option value="lastName">Sort by Last Name</option>
                 <option value="uploadedAt">Sort by Upload Date</option>
             </select>
             <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
@@ -174,6 +194,7 @@ function StudentProfileList() {
                         {/*<th>Major</th>*/}
                         <th>Undergrad Year</th>
                         <th>Expected Graduation</th>
+                        <th>Exams Passed</th>
                         <th>GPA</th>
                         <th>Actions</th>
                     </tr>
@@ -185,6 +206,7 @@ function StudentProfileList() {
                       {/*<td>{resume.major || 'N/A'}</td>*/}
                       <td>{resume.undergradYear || 'N/A'}</td>
                       <td>{resume.graduation || 'N/A'}</td>
+                      <td>{countExamsPassed(resume.examsPassed)}</td>
                       <td>{resume.gpa || 'N/A'}</td>
                       <td>
                         <button onClick={() => openStudentProfile(resume)}>
