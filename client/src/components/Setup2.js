@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SetupHeader from './SetupHeader';
 import { API_BASE_URL } from '../config';
 
 
 export const exams = [
-    { id: "p", label: "P" }, 
-    { id: "fm", label: "FM" }, 
-    { id: "ifm", label: "IFM" },
-    { id: "srm", label: "SRM" },
-    { id: "fam", label: "FAM" },
-    { id: "fams", label: "FAMS" },
-    { id: "faml", label: "FAML" },
-    { id: "ltam", label: "LTAM" },
-    { id: "stam", label: "STAM" },
-    { id: "altam", label: "ALTAM" },
-    { id: "astam", label: "ASTAM" },
-    { id: "pa", label: "PA" },
-    { id: "mas1", label: "MAS1" },
-    { id: "mas2", label: "MAS2" },
-    { id: "exam5", label: "Exam 5" }, 
-    { id: "exam6", label: "Exam 6" } 
-  ];
+  { id: "p", label: "P" }, 
+  { id: "fm", label: "FM" }, 
+  { id: "ifm", label: "IFM" },
+  { id: "srm", label: "SRM" },
+  { id: "fam", label: "FAM" },
+  { id: "fams", label: "FAM-Short Term Only" },
+  { id: "faml", label: "FAM-Long Term Only" },
+  { id: "ltam", label: "LTAM" },
+  { id: "stam", label: "STAM" },
+  { id: "altam", label: "ALTAM" },
+  { id: "astam", label: "ASTAM" },
+  { id: "pa", label: "PA" },
+  { id: "mas1", label: "MAS1" },
+  { id: "mas2", label: "MAS2" },
+  { id: "exam5", label: "Exam 5" }, 
+  { id: "exam6", label: "Exam 6" } 
+];
   
 
 function Setup2({ formData, setFormData, header = 1, handleFileChange, file, readOnly = false, className, onValidityChange }) {
   const numExamsPassed = Object.values(formData.examsPassed).filter(Boolean).length;
   const [selectedFile, setSelectedFile] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
       
 
   useEffect(() => {
@@ -72,12 +73,42 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     }
   };
 
+  const handleDrag = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFiles(e.dataTransfer.files[0]);
+    }
+  }, []);
+
+
+
+  const handleFiles = (file) => {
+    setSelectedFile(file);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      resume: file.name
+    }));
+    handleFileChange(file);
+  };
 
   const handleLocalFileChange = (e) => {
-    const newFile = e.target.files[0];
-    setSelectedFile(newFile);
-    setFormData({ ...formData, resume: newFile.name });
-    handleFileChange(newFile);
+    if (e.target.files && e.target.files[0]) {
+      handleFiles(e.target.files[0]);
+    }
   };
 
   /* 
@@ -181,7 +212,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
         <div
           className="exams-grid"
           style={
-            readOnly ? { height: `${Math.ceil(numExamsPassed / 6) * 35 - 35}px` } : {}
+            readOnly ? { height: `${Math.ceil(numExamsPassed / 3) * 35 - 35}px` } : {}
           }
         >
           {readOnly ? (
@@ -237,7 +268,13 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
             <p>No resume uploaded.</p>
         )
       ) : (
-        <div className="resume-upload">
+        <div 
+          className={`resume-upload ${dragActive ? 'drag-active' : ''}`}
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+        >
           <label htmlFor="resume" className="resume-upload-label">
             <div className="resume-upload-area">
               {selectedFile ? (

@@ -1,183 +1,185 @@
 
 
 .progress-bar-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 7px; 
-    padding-top: 50px; 
-  }
-  
-  .progress-bar {
-    height: 100%;
-    background-color: var(--rush);
-    transition: width 0.4s ease;
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7px; 
+  padding-top: 50px; 
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--rush);
+  transition: width 0.4s ease;
+}
 
 
-  .navigation-container.setup{
-    position: fixed;
-    bottom: 40px; 
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 200px;
-  }
+.navigation-container.setup{
+  position: fixed;
+  bottom: 40px; 
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 200px;
+}
 
 
-  .navigation-container.edit{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 422px; 
-  }
-  
-  
-  .step-card {
-    border-radius: 15px;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    background-color: #f9f9f9;
-    display: flex;
-    margin-top: 20px;
-    gap: 24px;
-    padding: 20px;
-    align-items: center; 
-  }
-  
-  .step-number {
-    font-size: 36px;
-  }
-  
+.navigation-container.edit{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 422px; 
+}
+
+
+.step-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: #f9f9f9;
+  display: flex;
+  margin-top: 20px;
+  gap: 24px;
+  padding: 20px;
+  align-items: center; 
+}
+
+.step-number {
+  font-size: 36px;
+}
 
 
 
-  .exams-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap: 10px;
-    margin: 10px 0; 
-  }
-  
-  .exam-checkbox {
-    display: flex;
-    align-items: center;
-  }
-  
-  .exam-checkbox label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .exam-checkbox input[type="checkbox"] {
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    margin-right: 8px;
-    position: relative;
-  }
 
-  .exam-checkbox input[type="checkbox"]:checked {
-    background-color: var(--rush);
-    border-color: var(--rush);
-  }
+.exams-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 10px 0; 
+}
 
-  .exam-checkbox input[type="checkbox"]:checked::before {
-    content: '\2714';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 14px;
-  }
+.exam-checkbox {
+  display: flex;
+  align-items: center;
+}
 
-  .exam-checkbox .exam-label {
-    color: var(--cool-gray);
-  }
-  
-  .exam-checkbox input[type="checkbox"]:checked + .exam-label {
-    color: #000;
-  }
+.exam-checkbox label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
+.exam-checkbox input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  margin-right: 8px;
+  position: relative;
+}
 
-  .questions {
-    display: flex;
-    flex-direction: column;
-    max-width: 650px;
-    width: 100%;
-    margin: auto;
-  }
-  
-  .question {
-    display: flex;
-    align-items: center; 
-    justify-content: space-between; 
-    margin-bottom: 10px;
-  }
-  
-  .question p {
-    margin: 0; 
-  }
-  
-  .resume-upload {
-    margin-bottom: 20px;
-  }
-  
-  .resume-upload-label {
-    display: block;
-    cursor: pointer;
-  }
-  
-  .resume-upload-area {
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    padding: 10px;
-    padding-left: 60px;
-    padding-right: 60px;
-    text-align: center;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s ease;
-  }
-  .resume-upload-area h1 {
-      color: #333;
-      font-size: 18px;
-      margin-bottom: 10px;
-  }
-  
-  .resume-upload-area:hover {
-    background-color: #eee;
-  }
-  
-  .resume-upload-area input[type="file"] {
-    display: none;
-  }
+.exam-checkbox input[type="checkbox"]:checked {
+  background-color: var(--rush);
+  border-color: var(--rush);
+}
 
-  .selected-file-name {
-    font-weight: bold;
-    color: #333;
-  }
+.exam-checkbox input[type="checkbox"]:checked::before {
+  content: '\2714';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 14px;
+}
+
+.exam-checkbox .exam-label {
+  color: var(--cool-gray);
+}
+
+.exam-checkbox input[type="checkbox"]:checked + .exam-label {
+  color: #000;
+}
 
 
-  .read-only {
-    background-color: transparent;
-    color: black;
-    border: none;
-    pointer-events: none; 
+.questions {
+  display: flex;
+  flex-direction: column;
+  max-width: 650px;
+  width: 100%;
+  margin: auto;
+}
+
+.question {
+  display: flex;
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 10px;
+}
+
+.question p {
+  margin: 0; 
+}
+
+.resume-upload {
+  margin-bottom: 20px;
+}
+
+.resume-upload-label {
+  display: block;
+  cursor: pointer;
+}
+
+.resume-upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  padding-left: 60px;
+  padding-right: 60px;
+  text-align: center;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.resume-upload-area:hover,
+.resume-upload.drag-active .resume-upload-area {
+  background-color: #eee;
+  border-color: #999;
+}
+
+.resume-upload-area h1 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.resume-upload-area input[type="file"] {
+  display: none;
+}
+
+.selected-file-name {
+  font-weight: bold;
+  color: #333;
+}
+
+
+.read-only {
+  background-color: transparent;
+  color: black;
+  border: none;
+  pointer-events: none; 
 }
 
 .read-only-select {
-    -webkit-appearance: none; 
-    -moz-appearance: none;
-    appearance: none;
-    background-color: transparent;
-    pointer-events: none;
+  -webkit-appearance: none; 
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  pointer-events: none;
 }
 
 .resume-viewer {
