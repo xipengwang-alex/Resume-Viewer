@@ -4,8 +4,8 @@ import SetupHeader from './SetupHeader';
 function Setup3({ formData, setFormData, header = 1, readOnly = false, className, onValidityChange }) {
   
   useEffect(() => {
-    const { willNeedSponsorship, sponsorshipTimeframe, opportunityType, pastInternships, gpa } = formData;
-    const isValid = willNeedSponsorship && sponsorshipTimeframe && opportunityType && pastInternships && gpa;
+    const { willNeedSponsorship, opportunityType, pastInternships, gpa } = formData;
+    const isValid = willNeedSponsorship && opportunityType && pastInternships && gpa;
     if (onValidityChange) {
       onValidityChange(isValid);
     }
@@ -22,10 +22,11 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false, className
   return (
     <div className={`content ${className}`}>
       {header === 1 && <SetupHeader />}
-      <div className="questions">
-        {/* Question 1 */}
-        <div className="question">
+      <div className="questions-grid">
+        <div className="question-text">
           <p>1. Do you require sponsorship to work in the U.S.?</p>
+        </div>
+        <div className="input-container">
           <select
             name="willNeedSponsorship"
             value={formData.willNeedSponsorship || ''}
@@ -38,26 +39,11 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false, className
             <option value="notSure">Not Sure</option>
           </select>
         </div>
-      
-        {/* Question 2 */}
-        <div className="question">
-          <p>2. Do you need sponsorship now or in the future?</p>
-          <select
-            name="sponsorshipTimeframe"
-            value={formData.sponsorshipTimeframe || ''}
-            onChange={handleChange}
-            className={readOnly ? "read-only-select" : ""}
-          >
-            <option value="">Select</option>
-            <option value="now">Now</option>
-            <option value="future">In the future</option>
-            <option value="never">Never</option>
-          </select>
-        </div>
 
-        {/* Question 3 */}
-        <div className="question">
-          <p>3. Are you looking for an internship or a full time opportunity?</p>
+        <div className="question-text">
+          <p>2. Are you looking for an internship, a full-time position, or both?</p>
+        </div>
+        <div className="input-container">
           <select
             name="opportunityType"
             value={formData.opportunityType || ''}
@@ -67,12 +53,14 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false, className
             <option value="">Select</option>
             <option value="internship">Internship</option>
             <option value="fullTime">Full Time</option>
+            <option value="bothInternshipAndFullTime">Both</option>
           </select>
         </div>
 
-        {/* Question 4 */}
-        <div className="question">
-          <p>4. Have you completed at least one actuarial related internship in the past?</p>
+        <div className="question-text">
+          <p>3. Have you completed at least one actuarial related internship in the past?</p>
+        </div>
+        <div className="input-container">
           <select
             name="pastInternships"
             value={formData.pastInternships || ''}
@@ -85,20 +73,18 @@ function Setup3({ formData, setFormData, header = 1, readOnly = false, className
           </select>
         </div>
 
-        {/* Question 5 */}
-        <div className="question">
-          <p>5. What is your current GPA?</p>
-          <div className="input-container" >
-            <input 
-                type="number" 
-                name="gpa" 
-                value={formData.gpa || ""} 
-                onChange={handleChange} 
-                className={readOnly ? "read-only" : ""}
-                style={{ width: '180px' }} 
-                required
-            />
-          </div>
+        <div className="question-text">
+          <p>4. What is your current GPA?</p>
+        </div>
+        <div className="input-container">
+          <input 
+            type="number" 
+            name="gpa" 
+            value={formData.gpa || ""} 
+            onChange={handleChange} 
+            className={readOnly ? "read-only" : ""}
+            required
+          />
         </div>
       </div>
     </div>

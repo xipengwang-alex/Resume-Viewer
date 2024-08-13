@@ -10,7 +10,7 @@ const StudentProfileSchema = new mongoose.Schema({
   graduation: String,
   major: String,
   willNeedSponsorship: String,
-  sponsorshipTimeframe: String,
+  //sponsorshipTimeframe: String,
   opportunityType: String,
   pastInternships: String,
   examsPassed: {

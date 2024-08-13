@@ -151,7 +151,7 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
       major,
       undergradYear, 
       willNeedSponsorship, 
-      sponsorshipTimeframe, 
+      //sponsorshipTimeframe, 
       opportunityType, 
       pastInternships 
     } = req.body;
@@ -174,7 +174,7 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
       existingProfile.graduation = graduation;
       existingProfile.major = major;
       existingProfile.willNeedSponsorship = willNeedSponsorship;
-      existingProfile.sponsorshipTimeframe = sponsorshipTimeframe;
+      //existingProfile.sponsorshipTimeframe = sponsorshipTimeframe;
       existingProfile.opportunityType = opportunityType;
       existingProfile.pastInternships = pastInternships;
       existingProfile.examsPassed = parsedExamsPassed;
@@ -199,7 +199,7 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
         graduation,
         major,
         willNeedSponsorship,
-        sponsorshipTimeframe, 
+        //sponsorshipTimeframe, 
         opportunityType,
         pastInternships,
         examsPassed: parsedExamsPassed,
