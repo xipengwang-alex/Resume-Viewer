@@ -21,12 +21,20 @@ function StudentProfilePage() {
             header={0}
             className="student-profile-page-content"
             readOnly={true}
+            showResumeView={false}
             />
             <Setup3
             formData={studentProfile}
             header={0}
             className="student-profile-page-content"
             readOnly={true}
+            />
+            <Setup2
+            formData={studentProfile}
+            header={0}
+            className="student-profile-page-content"
+            readOnly={true}
+            showPersonalInfo={false}
             />
             <div className="button-container">
             <button className="button black" onClick={handleBack}>

@@ -51,12 +51,20 @@ function UserProfilePage() {
                     header={0}
                     className="edit-profile-page-content"
                     readOnly={true} 
+                    showResumeView={false}
                     />
                     <Setup3
                     formData={profile}
                     header={0}
                     className="edit-profile-page-content"
                     readOnly={true} 
+                    />
+                    <Setup2
+                    formData={profile}
+                    header={0}
+                    className="edit-profile-page-content"
+                    readOnly={true} 
+                    showPersonalInfo={false}
                     />
                     <div className="button-container">
                     <button className="button black" onClick={handleBack}>Back</button>
