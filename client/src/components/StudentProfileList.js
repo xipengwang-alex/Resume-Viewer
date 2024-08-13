@@ -8,9 +8,10 @@ function StudentProfileList() {
   const [resumes, setResumes] = useState([]);
   const [nameFilter, setFilter] = useState('');
   const [majorFilter, setMajorFilter] = useState('ACTSCI');
+  const [undergradYearFilter, setUndergradYearFilter] = useState('');
+  //const [graduationYearFilter, setGraduationYearFilter] = useState('');
   const [gpaFilter, setGpaFilter] = useState('');
-  const [graduationYearFilter, setGraduationYearFilter] = useState('');
-  const [sortBy, setSortBy] = useState('fileName');
+  const [sortBy, setSortBy] = useState('graduationYear');
   const [sortOrder, setSortOrder] = useState('asc');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,10 +20,11 @@ function StudentProfileList() {
 
   function resetFilters() {
     setFilter('');
+    setUndergradYearFilter('');
+    //setGraduationYearFilter('');
     setGpaFilter('');
-    setGraduationYearFilter('');
     setMajorFilter('ACTSCI');
-    setSortBy('year');
+    setSortBy('graduationYear');
     setSortOrder('asc');
   }
   
@@ -61,17 +63,26 @@ function StudentProfileList() {
       .toLowerCase()
       .includes(nameFilter.toLowerCase()) &&
       (resume.major ? resume.major.toLowerCase().includes(majorFilter.toLowerCase()) : true) &&
-      (gpaFilter === '' || (resume.gpa >= gpaFilter)) &&
-      (graduationYearFilter === '' || (resume.graduation.toString() === graduationYearFilter))
+      (undergradYearFilter === '' || resume.undergradYear === undergradYearFilter) &&
+      //(graduationYearFilter === '' || (resume.graduation.toString() === graduationYearFilter)) &&
+      (gpaFilter === '' || (resume.gpa >= gpaFilter)) 
   );
   
   const sortedResumes = [...filteredResumes].sort((a, b) => {
     const isAsc = sortOrder === 'asc' ? 1 : -1;
     let aValue, bValue;
   
-    if (sortBy === 'graduation') {
-      aValue = a.graduation;
-      bValue = b.graduation;
+    if (sortBy === 'graduationYear') {
+      const convertGraduationToSortableValue = (graduation) => {
+        if (!graduation) return '';
+        const [term, year] = graduation.split(' ');
+        const termValue = term === 'Spring' ? '1' : (term === 'Fall' ? '2' : '0');
+        console.log(`${year || '0000'}${termValue}`);
+        return `${year || '0000'}${termValue}`;
+      };
+  
+      aValue = convertGraduationToSortableValue(a.graduation);
+      bValue = convertGraduationToSortableValue(b.graduation);
     } else if (sortBy === 'gpa') {
       aValue = a.gpa;
       bValue = b.gpa;
@@ -113,6 +124,26 @@ function StudentProfileList() {
                 style={{ width: '150px' }}
             />
             */}
+            <select
+              value={undergradYearFilter}
+              onChange={(e) => setUndergradYearFilter(e.target.value)}
+              style={{ width: '150px' }}
+            >
+              <option value="">Undergrad Year</option>
+              <option value="Freshman">Freshman</option>
+              <option value="Sophomore">Sophomore</option>
+              <option value="Junior">Junior</option>
+              <option value="Senior">Senior</option>
+            </select>
+            {/*
+            <input
+              type="text"
+              placeholder="Graduation Term"
+              value={graduationYearFilter}
+              onChange={(e) => setGraduationYearFilter(e.target.value)}
+              style={{ width: '150px' }}
+            />
+            */}
             <input
                 type="number"
                 placeholder="GPA"
@@ -123,17 +154,8 @@ function StudentProfileList() {
                 step="0.5"
                 style={{ width: '80px' }}
             />
-            <input
-                type="number"
-                placeholder="Graduation Year"
-                value={graduationYearFilter}
-                onChange={(e) => setGraduationYearFilter(e.target.value)}
-                min="2020"
-                max="2030"
-                style={{ width: '150px' }}
-            />
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="year">Sort by Year</option>
+                <option value="graduationYear">Sort by Graduation Year</option>
                 <option value="gpa">Sort by GPA</option>
                 <option value="last name">Sort by Last Name</option>
                 <option value="uploadedAt">Sort by Upload Date</option>
@@ -150,8 +172,9 @@ function StudentProfileList() {
                     <tr>
                         <th>Name</th>
                         {/*<th>Major</th>*/}
-                        <th>GPA</th>
+                        <th>Undergrad Year</th>
                         <th>Expected Graduation</th>
+                        <th>GPA</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -160,8 +183,9 @@ function StudentProfileList() {
                     <tr key={index}>
                       <td>{`${resume.firstName} ${resume.lastName}`}</td>
                       {/*<td>{resume.major || 'N/A'}</td>*/}
-                      <td>{resume.gpa || 'N/A'}</td>
+                      <td>{resume.undergradYear || 'N/A'}</td>
                       <td>{resume.graduation || 'N/A'}</td>
+                      <td>{resume.gpa || 'N/A'}</td>
                       <td>
                         <button onClick={() => openStudentProfile(resume)}>
                           View

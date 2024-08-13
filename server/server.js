@@ -142,8 +142,20 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
   try {
     console.log('Request Body:', req.body);
 
-    
-    const { examsPassed, firstName, lastName, gpa, graduation, major, willNeedSponsorship, sponsorshipTimeframe, opportunityType, pastInternships } = req.body;
+    const { 
+      examsPassed, 
+      firstName, 
+      lastName, 
+      gpa, 
+      graduation, 
+      major,
+      undergradYear, 
+      willNeedSponsorship, 
+      sponsorshipTimeframe, 
+      opportunityType, 
+      pastInternships 
+    } = req.body;
+
     const parsedExamsPassed = JSON.parse(examsPassed);
     const resume = req.file;
     const user = req.user;
@@ -158,6 +170,7 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
       existingProfile.firstName = firstName;
       existingProfile.lastName = lastName;
       existingProfile.gpa = gpa;
+      existingProfile.undergradYear = undergradYear;
       existingProfile.graduation = graduation;
       existingProfile.major = major;
       existingProfile.willNeedSponsorship = willNeedSponsorship;
@@ -182,6 +195,7 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
         lastName,
         isHidden: false,
         gpa,
+        undergradYear,
         graduation,
         major,
         willNeedSponsorship,

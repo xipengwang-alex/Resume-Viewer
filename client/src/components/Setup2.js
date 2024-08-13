@@ -33,8 +33,8 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
       setSelectedFile(file);
     }
     
-    const { firstName, lastName, graduation } = formData;
-    const isValid = firstName && lastName && graduation && (selectedFile || file);
+    const { firstName, lastName, undergradYear, graduation } = formData;
+    const isValid = firstName && lastName && undergradYear && graduation && (selectedFile || file);
     
     //const { firstName, lastName, graduation, major } = formData;
     //const isValid = firstName && lastName && graduation && major && (selectedFile || file);
@@ -120,6 +120,22 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
         </div>
         <div className="input-group">
           <div className="input-container">
+            <label htmlFor="undergradYear">Undergraduate Year*:</label>
+            <select 
+                name="undergradYear" 
+                value={formData.undergradYear || ""} 
+                onChange={handleChange} 
+                className={readOnly ? "read-only-select" : ""}
+                required
+            >
+                <option value="">Select Year</option>
+                <option value="Freshman">Freshman</option>
+                <option value="Sophomore">Sophomore</option>
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
+            </select>
+          </div>
+          <div className="input-container">
             <label htmlFor="graduation">Expected Graduation*:</label>
             <select 
                 name="graduation" 
@@ -128,12 +144,17 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
                 className={readOnly ? "read-only-select" : ""}
                 required
             >
-                <option value="">Select Year</option>
-                <option value="2028">2028</option>
-                <option value="2027">2027</option>
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
+              <option value="">Select Year</option>
+              <option value="Fall 2028">Fall 2028</option>
+              <option value="Spring 2028">Spring 2028</option>
+              <option value="Fall 2027">Fall 2027</option>
+              <option value="Spring 2027">Spring 2027</option>
+              <option value="Fall 2026">Fall 2026</option>
+              <option value="Spring 2026">Spring 2026</option>
+              <option value="Fall 2025">Fall 2025</option>
+              <option value="Spring 2025">Spring 2025</option>
+              <option value="Fall 2024">Fall 2024</option>
+              <option value="Spring 2024">Spring 2024</option>
             </select>
           </div>
           {/* 
