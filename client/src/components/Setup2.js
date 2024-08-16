@@ -11,15 +11,15 @@ export const exams = [
   { id: "fam", label: "FAM" },
   { id: "fams", label: "FAM-Short Term Only" },
   { id: "faml", label: "FAM-Long Term Only" },
-  { id: "ltam", label: "LTAM" },
-  { id: "stam", label: "STAM" },
+  //{ id: "ltam", label: "LTAM" },
+  //{ id: "stam", label: "STAM" },
   { id: "altam", label: "ALTAM" },
   { id: "astam", label: "ASTAM" },
   { id: "pa", label: "PA" },
   { id: "mas1", label: "MAS1" },
   { id: "mas2", label: "MAS2" },
-  { id: "exam5", label: "Exam 5" }, 
-  { id: "exam6", label: "Exam 6" } 
+  { id: "exam5", label: "CAS Exam 5" }, 
+  { id: "exam6", label: "CAS Exam 6" } 
 ];
   
 
