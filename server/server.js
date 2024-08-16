@@ -156,7 +156,7 @@ app.post('/student-profiles', authMiddleware, upload.single('resume'), async (re
       pastInternships 
     } = req.body;
 
-    const parsedExamsPassed = JSON.parse(examsPassed);
+    const parsedExamsPassed = examsPassed ? JSON.parse(examsPassed) : {};
     const resume = req.file;
     const user = req.user;
 

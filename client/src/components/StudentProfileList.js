@@ -40,7 +40,12 @@ function StudentProfileList() {
       }
     })
       .then(response => {
-        setResumes(response.data);
+        if (Array.isArray(response.data)) {
+          setResumes(response.data);
+        } else {
+          console.error('Unexpected API response format:', response.data);
+          setError('Unexpected data format received from server');
+        }
         setLoading(false);
       })
       .catch(error => {
@@ -61,19 +66,26 @@ function StudentProfileList() {
   };
   
   const countExamsPassed = (examsPassed) => {
+    if (!examsPassed) return 0;
     return Object.values(examsPassed).filter(Boolean).length;
   };
 
-  const filteredResumes = resumes.filter(resume =>
-    `${resume.firstName} ${resume.lastName}`
-      .toLowerCase()
-      .includes(nameFilter.toLowerCase()) &&
-      (resume.major ? resume.major.toLowerCase().includes(majorFilter.toLowerCase()) : true) &&
-      (undergradYearFilter === '' || resume.undergradYear === undergradYearFilter) &&
-      //(graduationYearFilter === '' || (resume.graduation.toString() === graduationYearFilter)) &&
-      (examsPassedFilter === '' || countExamsPassed(resume.examsPassed) >= parseInt(examsPassedFilter, 10)) &&
-      (gpaFilter === '' || (resume.gpa >= gpaFilter)) 
-  );
+  const filteredResumes = resumes.filter(resume => {
+    try {
+      return (
+        `${resume.firstName} ${resume.lastName}`
+          .toLowerCase()
+          .includes(nameFilter.toLowerCase()) &&
+        (resume.major ? resume.major.toLowerCase().includes(majorFilter.toLowerCase()) : true) &&
+        (undergradYearFilter === '' || resume.undergradYear === undergradYearFilter) &&
+        (examsPassedFilter === '' || countExamsPassed(resume.examsPassed) >= parseInt(examsPassedFilter, 10)) &&
+        (gpaFilter === '' || (resume.gpa >= gpaFilter)) 
+      );
+    } catch (error) {
+      console.error('Error filtering resume:', error, resume);
+      return false;
+    }
+  });
   
   const sortedResumes = [...filteredResumes].sort((a, b) => {
     const isAsc = sortOrder === 'asc' ? 1 : -1;
@@ -200,21 +212,27 @@ function StudentProfileList() {
                     </tr>
                 </thead>
                 <tbody>
-                  {sortedResumes.map((resume, index) => (
-                    <tr key={index}>
-                      <td>{`${resume.firstName} ${resume.lastName}`}</td>
-                      {/*<td>{resume.major || 'N/A'}</td>*/}
-                      <td>{resume.undergradYear || 'N/A'}</td>
-                      <td>{resume.graduation || 'N/A'}</td>
-                      <td>{countExamsPassed(resume.examsPassed)}</td>
-                      <td>{resume.gpa || 'N/A'}</td>
-                      <td>
-                        <button onClick={() => openStudentProfile(resume)}>
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {sortedResumes.map((resume, index) => {
+                  try {
+                    return (
+                      <tr key={index}>
+                        <td>{`${resume.firstName} ${resume.lastName}`}</td>
+                        <td>{resume.undergradYear || 'N/A'}</td>
+                        <td>{resume.graduation || 'N/A'}</td>
+                        <td>{countExamsPassed(resume.examsPassed)}</td>
+                        <td>{resume.gpa || 'N/A'}</td>
+                        <td>
+                          <button onClick={() => openStudentProfile(resume)}>
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  } catch (error) {
+                    console.error('Error rendering resume:', error, resume);
+                    return null;
+                  }
+                })}
                 </tbody>
             </table>
         </div>
