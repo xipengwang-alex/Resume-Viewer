@@ -20,7 +20,7 @@ const steps = [
   {
     number: '3',
     description:
-      'Indicate or update if you will need sponsorship.',
+      'Indicate or update if you will need sponsorship and the type of employment you are seeking (i.e., internship or full-time).',
   },
   {
     number: '4',
