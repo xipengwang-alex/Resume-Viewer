@@ -6,10 +6,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 function StudentProfilePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const studentProfile = location.state?.studentProfile;
+  const { studentProfile, filters } = location.state || {};
 
   const handleBack = () => {
-    navigate('/resumes');
+    navigate('/resumes', { state: { preserveFilters: true, filters } });
   };
 
   return (

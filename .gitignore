@@ -3,3 +3,4 @@ all_files_content.txt
 .env
 /build
 /server/resumes/*
+generateTestData.js

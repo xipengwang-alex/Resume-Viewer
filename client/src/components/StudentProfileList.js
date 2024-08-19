@@ -1,70 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../styles.css';
 import { API_BASE_URL } from '../config';
 
 function StudentProfileList() {
   const [resumes, setResumes] = useState([]);
-  const [nameFilter, setFilter] = useState('');
-  const [majorFilter, setMajorFilter] = useState('ACTSCI');
-  const [undergradYearFilter, setUndergradYearFilter] = useState('');
-  //const [graduationYearFilter, setGraduationYearFilter] = useState('');
-  const [examsPassedFilter, setExamsPassedFilter] = useState('');
-  const [gpaFilter, setGpaFilter] = useState('');
-  const [sortBy, setSortBy] = useState('graduationYear');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [filters, setFilters] = useState({
+    nameFilter: '',
+    majorFilter: 'ACTSCI',
+    undergradYearFilter: '',
+    examsPassedFilter: '',
+    gpaFilter: '',
+    sortBy: 'graduationYear',
+    sortOrder: 'asc'
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-
-  function resetFilters() {
-    setFilter('');
-    setUndergradYearFilter('');
-    //setGraduationYearFilter('');
-    setExamsPassedFilter('');
-    setGpaFilter('');
-    setMajorFilter('ACTSCI');
-    setSortBy('graduationYear');
-    setSortOrder('asc');
-  }
-  
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    setLoading(true);
-    axios.get(`${API_BASE_URL}/student-profiles`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-      .then(response => {
-        if (Array.isArray(response.data)) {
-          setResumes(response.data);
-        } else {
-          console.error('Unexpected API response format:', response.data);
-          setError('Unexpected data format received from server');
-        }
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching profiles:', error);
-        setError('Failed to fetch profiles. Please try again.');
-        setLoading(false);
-      });
+  const resetFilters = useCallback(() => {
+    const defaultFilters = {
+      nameFilter: '',
+      majorFilter: 'ACTSCI',
+      undergradYearFilter: '',
+      examsPassedFilter: '',
+      gpaFilter: '',
+      sortBy: 'graduationYear',
+      sortOrder: 'asc'
+    };
+    setFilters(defaultFilters);
+    localStorage.setItem('resumeFilters', JSON.stringify(defaultFilters));
   }, []);
 
-  /*
-  const openResume = (url) => {
-    window.open(url, '_blank');
+
+  const fetchResumes = useCallback(async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${API_BASE_URL}/student-profiles`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: filters
+      });
+      setResumes(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching profiles:', error);
+      setError('Failed to fetch profiles. Please try again.');
+      setLoading(false);
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    const savedFilters = JSON.parse(localStorage.getItem('resumeFilters'));
+    if (savedFilters) {
+      setFilters(savedFilters);
+    }
+    if (location.state?.preserveFilters && location.state?.filters) {
+      setFilters(location.state.filters);
+    }
+  }, [location]);
+
+  useEffect(() => {
+    fetchResumes();
+  }, [fetchResumes]);
+
+  useEffect(() => {
+    localStorage.setItem('resumeFilters', JSON.stringify(filters));
+  }, [filters]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [name]: value
+    }));
   };
-  */
+
+
 
   const openStudentProfile = (studentProfile) => {
-    navigate('/student-profile', { state: { studentProfile } });
+    navigate('/student-profile', { 
+      state: { 
+        studentProfile,
+        filters: filters
+      } 
+    });
   };
-  
+
   const countExamsPassed = (examsPassed) => {
     if (!examsPassed) return 0;
     return Object.values(examsPassed).filter(Boolean).length;
@@ -75,11 +99,11 @@ function StudentProfileList() {
       return (
         `${resume.firstName} ${resume.lastName}`
           .toLowerCase()
-          .includes(nameFilter.toLowerCase()) &&
-        (resume.major ? resume.major.toLowerCase().includes(majorFilter.toLowerCase()) : true) &&
-        (undergradYearFilter === '' || resume.undergradYear === undergradYearFilter) &&
-        (examsPassedFilter === '' || countExamsPassed(resume.examsPassed) >= parseInt(examsPassedFilter, 10)) &&
-        (gpaFilter === '' || (resume.gpa >= gpaFilter)) 
+          .includes(filters.nameFilter.toLowerCase()) &&
+        (resume.major ? resume.major.toLowerCase().includes(filters.majorFilter.toLowerCase()) : true) &&
+        (filters.undergradYearFilter === '' || resume.undergradYear === filters.undergradYearFilter) &&
+        (filters.examsPassedFilter === '' || countExamsPassed(resume.examsPassed) >= parseInt(filters.examsPassedFilter, 10)) &&
+        (filters.gpaFilter === '' || (resume.gpa >= filters.gpaFilter)) 
       );
     } catch (error) {
       console.error('Error filtering resume:', error, resume);
@@ -88,10 +112,10 @@ function StudentProfileList() {
   });
   
   const sortedResumes = [...filteredResumes].sort((a, b) => {
-    const isAsc = sortOrder === 'asc' ? 1 : -1;
+    const isAsc = filters.sortOrder === 'asc' ? 1 : -1;
     let aValue, bValue;
   
-    if (sortBy === 'graduationYear') {
+    if (filters.sortBy === 'graduationYear') {
       const convertGraduationToSortableValue = (graduation) => {
         if (!graduation) return '';
         const [term, year] = graduation.split(' ');
@@ -102,21 +126,21 @@ function StudentProfileList() {
   
       aValue = convertGraduationToSortableValue(a.graduation);
       bValue = convertGraduationToSortableValue(b.graduation);
-    } else if (sortBy === 'gpa') {
+    } else if (filters.sortBy === 'gpa') {
       aValue = a.gpa;
       bValue = b.gpa;
-    } else if (sortBy === 'lastName') {
+    } else if (filters.sortBy === 'lastName') {
       aValue = a.lastName;
       bValue = b.lastName;
-    } else if (sortBy === 'uploadedAt') {
+    } else if (filters.sortBy === 'uploadedAt') {
       aValue = new Date(a.resume.uploadedAt);
       bValue = new Date(b.resume.uploadedAt);
-    } else if (sortBy === 'examsPassed') {
+    } else if (filters.sortBy === 'examsPassed') {
       aValue = countExamsPassed(a.examsPassed);
       bValue = countExamsPassed(b.examsPassed);
     } else {
-      aValue = a[sortBy];
-      bValue = b[sortBy];
+      aValue = a[filters.sortBy];
+      bValue = b[filters.sortBy];
     }
   
     if (aValue < bValue) return -1 * isAsc;
@@ -132,9 +156,10 @@ function StudentProfileList() {
         <div className="filters">
             <input
                 type="text"
+                name="nameFilter"
                 placeholder="Name"
-                value={nameFilter}
-                onChange={(e) => setFilter(e.target.value)}
+                value={filters.nameFilter}
+                onChange={handleFilterChange}
                 style={{ width: '150px' }}
             />
             {/*
@@ -147,8 +172,9 @@ function StudentProfileList() {
             />
             */}
             <select
-              value={undergradYearFilter}
-              onChange={(e) => setUndergradYearFilter(e.target.value)}
+              name="undergradYearFilter"
+              value={filters.undergradYearFilter}
+              onChange={handleFilterChange}
               style={{ width: '150px' }}
             >
               <option value="">Undergrad Year</option>
@@ -168,31 +194,33 @@ function StudentProfileList() {
             */}
             <input
                 type="number"
+                name="examsPassedFilter"
                 placeholder="Exams"
-                value={examsPassedFilter}
-                onChange={(e) => setExamsPassedFilter(e.target.value)}
+                value={filters.examsPassedFilter}
+                onChange={handleFilterChange}
                 min="0"
                 max="16"
                 style={{ width: '150px' }}
             />
             <input
                 type="number"
+                name="gpaFilter"
                 placeholder="GPA"
-                value={gpaFilter}
-                onChange={(e) => setGpaFilter(e.target.value)}
+                value={filters.gpaFilter}
+                onChange={handleFilterChange}
                 min="0"
                 max="4"
                 step="0.5"
                 style={{ width: '80px' }}
             />
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="graduationYear">Sort by Graduation Year</option>
-                <option value="examsPassed">Sort by Exams Passed</option>
-                <option value="gpa">Sort by GPA</option>
-                <option value="lastName">Sort by Last Name</option>
-                <option value="uploadedAt">Sort by Upload Date</option>
+            <select name="sortBy" value={filters.sortBy} onChange={handleFilterChange}>
+              <option value="graduationYear">Sort by Graduation Year</option>
+              <option value="examsPassed">Sort by Exams Passed</option>
+              <option value="gpa">Sort by GPA</option>
+              <option value="lastName">Sort by Last Name</option>
+              <option value="uploadedAt">Sort by Upload Date</option>
             </select>
-            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+            <select name="sortOrder" value={filters.sortOrder} onChange={handleFilterChange}>
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
             </select>
