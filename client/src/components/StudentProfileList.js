@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../styles.css';
@@ -19,6 +19,7 @@ function StudentProfileList() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const shouldRestoreScroll = useRef(true);
 
   const resetFilters = useCallback(() => {
     const defaultFilters = {
@@ -33,7 +34,6 @@ function StudentProfileList() {
     setFilters(defaultFilters);
     localStorage.setItem('resumeFilters', JSON.stringify(defaultFilters));
   }, []);
-
 
   const fetchResumes = useCallback(async () => {
     setLoading(true);
@@ -70,17 +70,30 @@ function StudentProfileList() {
     localStorage.setItem('resumeFilters', JSON.stringify(filters));
   }, [filters]);
 
+  useEffect(() => {
+    if (!loading && shouldRestoreScroll.current) {
+      const savedScrollPosition = localStorage.getItem('resumeListScrollPosition');
+      if (savedScrollPosition) {
+        window.scrollTo(0, parseInt(savedScrollPosition));
+        localStorage.removeItem('resumeListScrollPosition');
+      }
+      shouldRestoreScroll.current = false;
+    }
+  }, [loading]);
+
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prevFilters => ({
       ...prevFilters,
       [name]: value
     }));
+    shouldRestoreScroll.current = false; 
   };
 
 
 
   const openStudentProfile = (studentProfile) => {
+    localStorage.setItem('resumeListScrollPosition', window.scrollY.toString());
     navigate('/student-profile', { 
       state: { 
         studentProfile,
