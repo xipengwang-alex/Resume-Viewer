@@ -187,6 +187,29 @@ function StudentProfileList() {
     return termA === 'Spring' ? -1 : 1;
   };
 
+  const handleDownload = async (resumeFilePath, studentName) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios({
+        url: `${API_BASE_URL}${resumeFilePath}`,
+        method: 'GET',
+        responseType: 'blob',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${studentName}_resume.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      alert('Failed to download resume. Please try again.');
+    }
+  };
+
   if (loading) return <div>Loading profiles...</div>;
   if (error) return <div>{error}</div>;
   
@@ -288,6 +311,14 @@ function StudentProfileList() {
       </div>
       <div className="table-container">
         <table className="table">
+          <colgroup>
+            <col style={{ width: '25%' }} /> {/* Name */}
+            <col style={{ width: '15%' }} /> {/* Undergrad Year */}
+            <col style={{ width: '15%' }} /> {/* Expected Graduation */}
+            <col style={{ width: '10%' }} /> {/* Exams Passed */}
+            <col style={{ width: '10%' }} /> {/* GPA */}
+            <col style={{ width: '30%' }} /> {/* Actions */}
+          </colgroup>
           <thead>
             <tr>
               <th>Name</th>
@@ -308,9 +339,14 @@ function StudentProfileList() {
               <td>{countExamsPassed(resume.examsPassed)}</td>
               <td>{resume.gpa || 'N/A'}</td>
               <td>
-                <button onClick={() => openStudentProfile(resume)}>
-                  View
-                </button>
+                <div className="action-buttons">
+                  <button onClick={() => openStudentProfile(resume)}>
+                    View
+                  </button>
+                  <button onClick={() => handleDownload(resume.resume.filePath, `${resume.firstName}_${resume.lastName}`)}>
+                    Download
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

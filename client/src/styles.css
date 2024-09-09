@@ -188,6 +188,7 @@ button {
 .table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
 }
 
 .table th,
@@ -197,6 +198,42 @@ button {
     border-bottom: 1px solid #ddd;
 }
 
+.table th {
+    background-color: #f0f0f0;
+}
+
+.table tbody tr:hover {
+    background-color: #e9e9e9;
+}
+
+.action-buttons {
+    display: flex;
+    width: 50%;
+}
+
+.action-buttons button {
+    flex: 1;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    min-width: 80px;
+    max-width: 100px;
+}
+
+.action-buttons button:hover {
+    background-color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+    .table {
+        table-layout: auto;
+    }
+    .action-buttons {
+        flex-direction: column;
+    }
+}
 .table th {
     background-color: #f0f0f0;
 }
