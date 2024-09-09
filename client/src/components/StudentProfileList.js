@@ -14,7 +14,9 @@ function StudentProfileList() {
     examsPassedFilter: '',
     gpaFilter: '',
     sortBy: 'graduationYear',
-    sortOrder: 'asc'
+    sortOrder: 'asc',
+    positionTypeFilter: '',
+    workAuthorizationFilter: ''
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,7 +32,9 @@ function StudentProfileList() {
       examsPassedFilter: '',
       gpaFilter: '',
       sortBy: 'graduationYear',
-      sortOrder: 'asc'
+      sortOrder: 'asc',
+      positionTypeFilter: '',
+      workAuthorizationFilter: ''
     };
     setFilters(defaultFilters);
     localStorage.setItem('resumeFilters', JSON.stringify(defaultFilters));
@@ -119,6 +123,26 @@ function StudentProfileList() {
       if (filters.gpaFilter) {
         result = result.filter(resume => resume.gpa >= filters.gpaFilter);
       }
+      if (filters.positionTypeFilter) {
+        result = result.filter(resume => {
+          if (filters.positionTypeFilter === 'internship') {
+            return resume.opportunityType === 'internship' || resume.opportunityType === 'bothInternshipAndFullTime';
+          } else if (filters.positionTypeFilter === 'fullTime') {
+            return resume.opportunityType === 'fullTime' || resume.opportunityType === 'bothInternshipAndFullTime';
+          }
+          return true;
+        });
+      }
+      if (filters.workAuthorizationFilter) {
+        result = result.filter(resume => {
+          if (filters.workAuthorizationFilter === 'yes') {
+            return resume.willNeedSponsorship === 'yes' || resume.willNeedSponsorship === 'notSure';
+          } else {
+            return resume.willNeedSponsorship === filters.workAuthorizationFilter;
+          }
+        });
+      }
+    
 
       // Apply sorting
       result = sortResumes(result);
@@ -158,7 +182,7 @@ function StudentProfileList() {
     if (!a) return 1;
     if (!b) return -1;
     const [termA, yearA] = a.split(' ');
-    const [termB, yearB] = b.split(' ');
+    const [ , yearB] = b.split(' ');
     if (yearA !== yearB) return yearA - yearB;
     return termA === 'Spring' ? -1 : 1;
   };
@@ -168,78 +192,99 @@ function StudentProfileList() {
   
   return (
     <div>
-      <div className="filters">
-        <input
-          type="text"
-          name="nameFilter"
-          placeholder="Name"
-          value={filters.nameFilter}
-          onChange={handleFilterChange}
-          style={{ width: '150px' }}
-        />
-        {/*
-        <input
-          type="text"
-          placeholder="Major"
-          value={majorFilter}
-          onChange={(e) => setMajorFilter(e.target.value)}
-          style={{ width: '150px' }}
-        />
-        */}
-        <select
-          name="undergradYearFilter"
-          value={filters.undergradYearFilter}
-          onChange={handleFilterChange}
-          style={{ width: '150px' }}
-        >
-          <option value="">Undergrad Year</option>
-          <option value="Freshman">Freshman</option>
-          <option value="Sophomore">Sophomore</option>
-          <option value="Junior">Junior</option>
-          <option value="Senior">Senior</option>
-        </select>
-        {/*
-        <input
-          type="text"
-          placeholder="Graduation Term"
-          value={graduationYearFilter}
-          onChange={(e) => setGraduationYearFilter(e.target.value)}
-          style={{ width: '150px' }}
-        />
-        */}
-        <input
-          type="number"
-          name="examsPassedFilter"
-          placeholder="Exams"
-          value={filters.examsPassedFilter}
-          onChange={handleFilterChange}
-          min="0"
-          max="16"
-          style={{ width: '150px' }}
-        />
-        <input
-          type="number"
-          name="gpaFilter"
-          placeholder="GPA"
-          value={filters.gpaFilter}
-          onChange={handleFilterChange}
-          min="0"
-          max="4"
-          step="0.5"
-          style={{ width: '80px' }}
-        />
-        <select name="sortBy" value={filters.sortBy} onChange={handleFilterChange}>
-          <option value="graduationYear">Sort by Graduation Year</option>
-          <option value="examsPassed">Sort by Exams Passed</option>
-          <option value="gpa">Sort by GPA</option>
-          <option value="lastName">Sort by Last Name</option>
-          <option value="uploadedAt">Sort by Upload Date</option>
-        </select>
-        <select name="sortOrder" value={filters.sortOrder} onChange={handleFilterChange}>
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
-        <button onClick={resetFilters}>Clear</button>
+      <div className="filters-container">
+        <div className="filters-line">
+          <input
+            type="text"
+            name="nameFilter"
+            placeholder="Name"
+            value={filters.nameFilter}
+            onChange={handleFilterChange}
+            style={{ width: '100px' }}
+          />
+          {/*
+          <input
+            type="text"
+            placeholder="Major"
+            value={majorFilter}
+            onChange={(e) => setMajorFilter(e.target.value)}
+            style={{ width: '150px' }}
+          />
+          */}
+          <select
+            name="undergradYearFilter"
+            value={filters.undergradYearFilter}
+            onChange={handleFilterChange}
+          >
+            <option value="">School Year</option>
+            <option value="Freshman">Freshman</option>
+            <option value="Sophomore">Sophomore</option>
+            <option value="Junior">Junior</option>
+            <option value="Senior">Senior</option>
+          </select>
+          {/*
+          <input
+            type="text"
+            placeholder="Graduation Term"
+            value={graduationYearFilter}
+            onChange={(e) => setGraduationYearFilter(e.target.value)}
+            style={{ width: '150px' }}
+          />
+          */}
+          <input
+            type="number"
+            name="examsPassedFilter"
+            placeholder="Exams"
+            value={filters.examsPassedFilter}
+            onChange={handleFilterChange}
+            min="0"
+            max="16"
+            className="half-width"
+          />
+          <input
+            type="number"
+            name="gpaFilter"
+            placeholder="GPA"
+            value={filters.gpaFilter}
+            onChange={handleFilterChange}
+            min="0"
+            max="4"
+            step="0.5"
+            className="half-width"
+          />
+          <select
+            name="positionTypeFilter"
+            value={filters.positionTypeFilter}
+            onChange={handleFilterChange}
+          >
+            <option value="">Position Type</option>
+            <option value="internship">Intern</option>
+            <option value="fullTime">Full-time</option>
+          </select>
+          <select
+            name="workAuthorizationFilter"
+            value={filters.workAuthorizationFilter}
+            onChange={handleFilterChange}
+          >
+            <option value="">Work Authorization</option>
+            <option value="no">Eligible to work in the U.S. with no restrictions</option>
+            <option value="yes">Will require visa sponsorship</option>
+          </select>
+        </div>
+        <div className="sorting-line">
+          <select name="sortBy" value={filters.sortBy} onChange={handleFilterChange}>
+            <option value="graduationYear">Sort by Graduation Year</option>
+            <option value="examsPassed">Sort by Exams Passed</option>
+            <option value="gpa">Sort by GPA</option>
+            <option value="lastName">Sort by Last Name</option>
+            <option value="uploadedAt">Sort by Upload Date</option>
+          </select>
+          <select name="sortOrder" value={filters.sortOrder} onChange={handleFilterChange}>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+          <button onClick={resetFilters}>Clear</button>
+        </div>
       </div>
       <div className="table-container">
         <table className="table">

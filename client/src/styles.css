@@ -206,19 +206,75 @@ button {
 }
 
 
-.filters {
+.filters-container {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
     margin-bottom: 20px;
-}
-
-.filters input,
-.filters select {
-    width: 150px; 
-    padding: 5px;
+  }
+  
+  .filters-line,
+  .sorting-line {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 10px;
+  }
+  
+  .filters-line select,
+  .filters-line input,
+  .sorting-line select,
+  .sorting-line button {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     font-size: 14px;
-}
-
+    min-width: 100px;
+  }
+  
+  .filters-line .half-width {
+    flex: 0.5;
+    min-width: 50px;
+  }
+  
+  .sorting-line select {
+    flex: 2;
+  }
+  
+  .sorting-line button {
+    flex: 1;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .sorting-line button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  @media (max-width: 1200px) {
+    .filters-line,
+    .sorting-line {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .filters-line select,
+    .filters-line input,
+    .sorting-line select,
+    .sorting-line button {
+      width: 100%;
+    }
+  
+    .filters-line .half-width {
+      width: 100%;
+    }
+  }
 
 
 .profile-circle {
