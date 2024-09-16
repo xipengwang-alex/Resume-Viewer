@@ -66,7 +66,7 @@ app.get('/student-profiles', authMiddleware, async (req, res) => {
     if (req.user.role !== 'recruiter') {
       return res.status(403).json({ message: 'Access denied' });
     }
-    const profiles = await StudentProfile.find();
+    const profiles = await StudentProfile.find({ isHidden: false });
     res.json(profiles);
   } catch (error) {
     console.error(error);
