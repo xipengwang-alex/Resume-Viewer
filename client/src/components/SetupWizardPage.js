@@ -9,7 +9,7 @@ import Setup3 from './Setup3';
 import Setup4 from './Setup4';
 import './Setup.css';
 import axios from 'axios';
-import { AUTH_BASE_URL, API_BASE_URL, getCurrentOrganization } from '../config';
+import { API_BASE_URL, getCurrentOrganization } from '../config';
 
 function SetupWizardPage() {
   const [currentStep, setCurrentStep] = useState(1);

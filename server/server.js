@@ -36,6 +36,10 @@ const corsOptions = {
   credentials: true
 };
 
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+}
+
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -202,14 +206,13 @@ app.post(
   }
 );
 
-app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
-
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
   });
 }
+
+app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
