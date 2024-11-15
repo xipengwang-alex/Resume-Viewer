@@ -37,7 +37,7 @@ const corsOptions = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+  app.use('/actuarial_science', express.static(path.join(__dirname, '../client/build')));
 }
 
 app.use(cors(corsOptions));
@@ -219,7 +219,7 @@ app.post(
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
 if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
+  app.get('/actuarial_science/*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
   });
 }
