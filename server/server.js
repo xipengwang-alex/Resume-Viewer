@@ -37,6 +37,7 @@ const corsOptions = {
 };
 
 if (process.env.NODE_ENV === 'production') {
+  app.use('/static', express.static(path.join(__dirname, '../client/build/static')));
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
@@ -63,6 +64,10 @@ const initializeDatabaseConnections = async () => {
 };
 
 initializeDatabaseConnections();
+
+app.get('/', (req, res) => {
+  res.redirect('/actuarial_science');
+});
 
 const apiPaths = [
   '/login',
@@ -214,7 +219,12 @@ app.post(
 
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    console.log('Catch-all route hit:', req.path);
+    if (req.path.startsWith('/static/')) {
+      res.status(404).send('Not found');
+    } else {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    }
   });
 }
 
