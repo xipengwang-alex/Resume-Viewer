@@ -37,7 +37,6 @@ const corsOptions = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  app.use('/static', express.static(path.join(__dirname, '../client/build/static')));
   app.use(express.static(path.join(__dirname, '../client/build')));
 }
 
@@ -217,18 +216,13 @@ app.post(
   }
 );
 
+app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
+
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
-    console.log('Catch-all route hit:', req.path);
-    if (req.path.startsWith('/static/')) {
-      res.status(404).send('Not found');
-    } else {
-      res.sendFile(path.join(__dirname, '../client/build/index.html'));
-    }
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
   });
 }
-
-app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
