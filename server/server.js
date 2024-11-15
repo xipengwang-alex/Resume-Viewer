@@ -64,19 +64,25 @@ const initializeDatabaseConnections = async () => {
 
 initializeDatabaseConnections();
 
-app.use('/:organization/*', (req, res, next) => {
-  const organization = req.params.organization;
-  if (!organizationConfig[organization] || !connections[organization]) {
-    return res.status(404).json({ message: 'Invalid organization or no database connection' });
-  }
+const apiPaths = [
+  '/login',
+  '/register',
+  '/validateToken',
+  '/myprofile',
+  '/student-profiles',
+  '/recruiter-profile'
+];
 
-  req.dbConnection = connections[organization];
-  req.organization = organization; 
-  next();
-});
-
-app.use('/:organization', (req, res, next) => {
-  next();
+apiPaths.forEach((apiPath) => {
+  app.use(`/:organization${apiPath}`, (req, res, next) => {
+    const organization = req.params.organization;
+    if (!organizationConfig[organization] || !connections[organization]) {
+      return res.status(404).json({ message: 'Invalid organization or no database connection' });
+    }
+    req.dbConnection = connections[organization];
+    req.organization = organization;
+    next();
+  });
 });
 
 app.use('/:organization/login', loginRoutes);
