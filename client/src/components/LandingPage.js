@@ -1,6 +1,9 @@
+/* client/src/components/LandingPage.js */
+
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Setup4 from './Setup4';
+import { getCurrentOrganization } from '../config';
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -8,11 +11,13 @@ function LandingPage() {
   const showSuccess = location.state && location.state.showSuccess;
 
   const handleEditProfile = () => {
-    navigate('/edit-profile');
+    const organization = getCurrentOrganization();
+    navigate(`/${organization}/edit-profile`);
   };
 
   const handleViewProfile = () => {
-    navigate('/myprofile');
+    const organization = getCurrentOrganization();
+    navigate(`/${organization}/myprofile`);
   };
 
   return (

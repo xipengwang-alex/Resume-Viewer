@@ -1,3 +1,5 @@
+/* client/src/components/SetupWizardPage.js */
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SetupProgressBar from './SetupProgressBar';
@@ -7,7 +9,7 @@ import Setup3 from './Setup3';
 import Setup4 from './Setup4';
 import './Setup.css';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { AUTH_BASE_URL, API_BASE_URL, getCurrentOrganization } from '../config';
 
 function SetupWizardPage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -21,12 +23,13 @@ function SetupWizardPage() {
   const totalSteps = 4; 
   const stepIndicator = `${currentStep-1}/${totalSteps-2}`;
   const navigate = useNavigate(); 
+  const organization = getCurrentOrganization();
 
   useEffect(() => {
     const checkProfileAndRedirect = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
-        navigate('/login');
+        navigate(`/${organization}/login`);
         return;
       }
 
@@ -35,20 +38,20 @@ function SetupWizardPage() {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        navigate('/landing');
+        navigate(`/${organization}/landing`);
       } catch (error) {
         if (error.response && error.response.status === 404) {
           setLoading(false);
         } else {
           console.error('Error checking profile:', error);
           setError('An error occurred. Please try again.');
-          setLoading(false);
+          navigate(`/${organization}/login`);
         }
       }
     };
 
     checkProfileAndRedirect();
-  }, [navigate]);
+  }, [navigate, organization]);
 
   const handleFileChange = (file) => {
     setFile(file);
@@ -75,7 +78,8 @@ function SetupWizardPage() {
   };
 
   const handleEditProfile = () => {
-    navigate('/myprofile');
+    const organization = getCurrentOrganization();
+    navigate(`/${organization}/myprofile`);
   };
 
   const handleSubmit = async () => {
@@ -111,7 +115,7 @@ function SetupWizardPage() {
       });
 
       console.log(response.data.message); 
-      navigate('/landing', { state: { showSuccess: true } });
+      navigate(`/${organization}/landing`, { state: { showSuccess: true } });
     } catch (error) {
       console.error(error);
       setError('Failed to submit profile. Please try again.');

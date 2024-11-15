@@ -1,37 +1,40 @@
+/* server/routes/loginRoutes.js */
+
 const express = require('express');
-const router = express.Router();
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const userSchema = require('../models/User').schema;
+
+const router = express.Router();
 
 router.post('/', async (req, res) => {
+  const { username, password } = req.body;
+
+  const User = req.dbConnection.model('User', userSchema);
+
   try {
-    const { username, password } = req.body;
-
     const user = await User.findOne({ username });
-
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const payload = {
       id: user._id,
-      role: user.role
+      role: user.role,
     };
 
-
-    const token = jwt.sign(payload, global.secretKey, { expiresIn: '1h' });
-
-    res.json({ token, message: 'Login successful', role: user.role });
+    jwt.sign(payload, global.secretKey, { expiresIn: '1d' }, (err, token) => {
+      if (err) throw err;
+      res.json({ token });
+    });
   } catch (error) {
-    console.error(error);
+    console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -1,15 +1,18 @@
+/* client/src/components/UserProfilePage.js */
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Setup2 from './Setup2';
 import Setup3 from './Setup3';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, getCurrentOrganization } from '../config';
 
 function UserProfilePage() {
     const navigate = useNavigate(); 
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const organization = getCurrentOrganization();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -35,7 +38,7 @@ function UserProfilePage() {
 
 
     const handleBack = () => {
-        navigate('/landing');
+        navigate(`/${organization}/landing`);
       };
     
     return (

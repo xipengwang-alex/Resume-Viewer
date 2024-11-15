@@ -1,7 +1,10 @@
+/* client/src/components/StudentProfilePage.js */
+
 import React from 'react';
 import Setup2 from './Setup2';
 import Setup3 from './Setup3';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getCurrentOrganization } from '../config';
 
 function StudentProfilePage() {
   const location = useLocation();
@@ -9,7 +12,8 @@ function StudentProfilePage() {
   const { studentProfile, filters } = location.state || {};
 
   const handleBack = () => {
-    navigate('/resumes', { 
+    const organization = getCurrentOrganization();
+    navigate(`/${organization}/resumes`, { 
       state: { 
         preserveFilters: true, 
         filters 

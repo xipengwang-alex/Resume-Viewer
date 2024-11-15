@@ -1,3 +1,5 @@
+/* client/src/App.js */
+
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
@@ -16,7 +18,7 @@ import BasicLayout from './BasicLayout';
 import LandingPage from './components/LandingPage';
 import withAuth from './components/withAuth';
 import './styles.css';
-import { API_BASE_URL } from './config';
+import { API_BASE_URL, getCurrentOrganization } from './config';
 
 
 const EditProfilePageWithAuth = withAuth(EditProfilePage, ['student']);
@@ -31,17 +33,18 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<RootRedirect />} />
-        <Route path="/" element={<WithTopBarLayout />}>
-          <Route path="/edit-profile" element={<EditProfilePageWithAuth />} />
-          <Route path="/resumes" element={<StudentProfileListPageWithAuth />} />
-          <Route path="/student-profile" element={<StudentProfilePageWithAuth />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/myprofile" element={<UserProfilePageWithAuth />} />
-          <Route path="/landing" element={<LandingPageWithAuth />} />
+        <Route path="/:organization" element={<RootRedirect />} />
+        <Route path="/:organization" element={<WithTopBarLayout />}>
+          <Route path="edit-profile" element={<EditProfilePageWithAuth />} />
+          <Route path="resumes" element={<StudentProfileListPageWithAuth />} />
+          <Route path="student-profile" element={<StudentProfilePageWithAuth />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegistrationPage />} />
+          <Route path="myprofile" element={<UserProfilePageWithAuth />} />
+          <Route path="landing" element={<LandingPageWithAuth />} />
         </Route>
 
-        <Route path="/setup" element={<BasicLayout />}>
+        <Route path="/:organization/setup" element={<BasicLayout />}>
           <Route index element={<SetupWizardPageWithAuth />} />
         </Route>
       </Routes>
@@ -55,9 +58,11 @@ function WithTopBarLayout() {
   const [profile, setProfile] = useState(null);
   const [isHidden, setIsHidden] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const location = useLocation();
+  const organization = getCurrentOrganization();
 
   let title = 'Resume Viewer';
   switch (location.pathname) {
@@ -90,6 +95,7 @@ function WithTopBarLayout() {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem('token');
         if (token) {
@@ -108,11 +114,13 @@ function WithTopBarLayout() {
         }
       } catch (err) {
         console.error('Failed to fetch profile', err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProfile();
-  }, []);
+  }, [navigate, organization]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -160,10 +168,13 @@ function WithTopBarLayout() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login', { replace: true });
+    const organization = getCurrentOrganization();
+    navigate(`/${organization}/login`, { replace: true });
     window.location.reload();
   };
 
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="App">

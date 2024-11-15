@@ -1,33 +1,15 @@
+/* client/src/components/Setup2.js */
+
 import React, { useState, useEffect, useCallback } from 'react';
 import SetupHeader from './SetupHeader';
-import { API_BASE_URL } from '../config';
-
-
-export const exams = [
-  { id: "p", label: "P" }, 
-  { id: "fm", label: "FM" }, 
-  { id: "ifm", label: "IFM" },
-  { id: "srm", label: "SRM" },
-  { id: "fam", label: "FAM" },
-  { id: "fams", label: "FAM-Short Term Only" },
-  { id: "faml", label: "FAM-Long Term Only" },
-  //{ id: "ltam", label: "LTAM" },
-  //{ id: "stam", label: "STAM" },
-  { id: "altam", label: "ALTAM" },
-  { id: "astam", label: "ASTAM" },
-  { id: "pa", label: "PA" },
-  { id: "mas1", label: "MAS1" },
-  { id: "mas2", label: "MAS2" },
-  { id: "exam5", label: "CAS Exam 5" }, 
-  { id: "exam6", label: "CAS Exam 6" } 
-];
-  
+import { API_BASE_URL, organizationConfig, getCurrentOrganization } from '../config';
 
 function Setup2({ formData, setFormData, header = 1, handleFileChange, file, readOnly = false, className, onValidityChange, showResumeView = true, showPersonalInfo = true }) {
-  const numExamsPassed = Object.values(formData.examsPassed).filter(Boolean).length;
+  const organization = getCurrentOrganization();
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
-      
+  //const [skillsInput, setSkillsInput] = useState('');
+
 
   useEffect(() => {
     if (file) {
@@ -36,9 +18,6 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     
     const { firstName, lastName, undergradYear, graduation } = formData;
     const isValid = firstName && lastName && undergradYear && graduation && (selectedFile || file);
-    
-    //const { firstName, lastName, graduation, major } = formData;
-    //const isValid = firstName && lastName && graduation && major && (selectedFile || file);
 
     if (onValidityChange) {
       onValidityChange(isValid);
@@ -47,16 +26,20 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     if (!formData.major && setFormData) {
       setFormData(prevFormData => ({
         ...prevFormData,
-        major: "ACTSCI"
+        major: organizationConfig[organization].majorOptions[0]
       }));
     }
-  }, [file, formData, selectedFile, onValidityChange, setFormData]);
-  
+    /*
+    if (formData.skills) {
+      setSkillsInput(formData.skills.join(', '));
+    }
+    */
+  }, [file, formData, selectedFile, onValidityChange, setFormData, organization, formData.skills]);
 
   const handleChange = (e) => {
     if (!readOnly) {
       const { name, value, type, checked } = e.target;
-      if (type === "checkbox") {
+      if (type === "checkbox" && organization === 'actuarial_science') {
         setFormData(prevFormData => ({
           ...prevFormData,
           examsPassed: {
@@ -73,6 +56,62 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     }
   };
 
+  /*
+  const handleSkillsInputChange = (e) => {
+    if (!readOnly) {
+      setSkillsInput(e.target.value);
+    }
+  };
+
+  const handleSkillsInputBlur = () => {
+    if (!readOnly) {
+      const skillsArray = skillsInput.split(',').map(s => s.trim()).filter(s => s);
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        skills: skillsArray
+      }));
+    }
+  };
+
+  const handleProjectChange = (index, field, value) => {
+    if (!readOnly && organization === 'data_mine') {
+      const newProjects = [...(formData.projects || [])];
+      if (field === 'technologiesUsed') {
+        newProjects[index] = {
+          ...newProjects[index],
+          [field]: value.split(',').map(t => t.trim()).filter(t => t)
+        };
+      } else {
+        newProjects[index] = {
+          ...newProjects[index],
+          [field]: value
+        };
+      }
+      setFormData({ ...formData, projects: newProjects });
+    }
+  };
+
+  const addProject = () => {
+    if (!readOnly && organization === 'data_mine') {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        projects: [
+          ...(prevFormData.projects || []),
+          { name: '', description: '', technologiesUsed: [] }
+        ]
+      }));
+    }
+  };
+
+  const removeProject = (index) => {
+    if (!readOnly && organization === 'data_mine') {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        projects: prevFormData.projects.filter((_, i) => i !== index)
+      }));
+    }
+  };
+ */
   const handleDrag = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -83,7 +122,14 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     }
   }, []);
 
-
+  const handleFiles = useCallback((file) => {
+    setSelectedFile(file);
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      resume: file.name
+    }));
+    handleFileChange(file);
+  }, [setFormData, handleFileChange]);
 
   const handleDrop = useCallback((e) => {
     e.preventDefault();
@@ -92,18 +138,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFiles(e.dataTransfer.files[0]);
     }
-  }, []);
-
-
-
-  const handleFiles = (file) => {
-    setSelectedFile(file);
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      resume: file.name
-    }));
-    handleFileChange(file);
-  };
+  }, [handleFiles]);
 
   const handleLocalFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -111,13 +146,117 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     }
   };
 
-  /* 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
-    setFormData({ ...formData, resume: e.target.files[0].name });
+  const renderExams = () => {
+    if (organization !== 'actuarial_science') return null;
+    
+    const numExamsPassed = Object.values(formData.examsPassed || {}).filter(Boolean).length;
+    const examsList = organizationConfig.actuarial_science.exams;
+
+    return (
+      <>
+        <label htmlFor="skills">Passed Exams:</label>
+        <div
+          className="exams-grid"
+          style={readOnly ? { height: `${Math.ceil(numExamsPassed / 3) * 35 - 35}px` } : {}}
+        >
+          {readOnly ? (
+            examsList.filter(exam => formData.examsPassed?.[exam.id]).map(exam => (
+              <div key={exam.id} className="exam-checkbox">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    name={exam.id} 
+                    checked={formData.examsPassed?.[exam.id] || false} 
+                    onChange={handleChange} 
+                    readOnly={readOnly}
+                    className={readOnly ? "read-only" : ""}
+                  />
+                  <span className="exam-label">{exam.label}</span>
+                </label>
+              </div>
+            ))
+          ) : (
+            examsList.map(exam => (
+              <div key={exam.id} className="exam-checkbox">
+                <label>
+                  <input 
+                    type="checkbox" 
+                    name={exam.id} 
+                    checked={formData.examsPassed?.[exam.id] || false} 
+                    onChange={handleChange} 
+                    readOnly={readOnly}
+                    className={readOnly ? "read-only" : ""}
+                  />
+                  <span className="exam-label">{exam.label}</span>
+                </label>
+              </div>
+            ))
+          )}
+        </div>
+      </>
+    );
   };
-  */
+
+  const renderDataMineFields = () => {
+    if (organization !== 'data_mine') return null;
+    /* 
+    return (
+      <>
+        <div className="input-container">
+          <label htmlFor="skills">Skills (comma-separated):</label>
+          <input
+            type="text"
+            name="skills"
+            value={skillsInput}
+            onChange={handleSkillsInputChange}
+            onBlur={handleSkillsInputBlur}
+            readOnly={readOnly}
+            className={readOnly ? "read-only" : ""}
+          />
+        </div>
+        {!readOnly && (
+          <div className="project-section">
+            <label>Projects:</label>
+            {formData.projects?.map((project, index) => (
+              <div key={index} className="project-item">
+                <input
+                  type="text"
+                  placeholder="Project name"
+                  value={project.name}
+                  onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
+                />
+                <textarea
+                  placeholder="Project description"
+                  value={project.description}
+                  onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="Technologies used (comma-separated)"
+                  value={project.technologiesUsed.join(', ')}
+                  onChange={(e) => handleProjectChange(index, 'technologiesUsed', e.target.value)}
+                />
+                <button type="button" onClick={() => removeProject(index)}>Remove Project</button>
+              </div>
+            ))}
+            <button type="button" onClick={addProject}>Add Project</button>
+          </div>
+        )}
+        {readOnly && formData.projects?.length > 0 && (
+          <div className="project-section">
+            <label>Projects:</label>
+            {formData.projects.map((project, index) => (
+              <div key={index} className="project-item-readonly">
+                <h4>{project.name}</h4>
+                <p>{project.description}</p>
+                <p><strong>Technologies:</strong> {project.technologiesUsed.join(', ')}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </>
+    );*/
+  };
 
   return (
     <div className={`content ${className}`}>
@@ -128,23 +267,23 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
             <div className="input-container">
               <label htmlFor="firstName">First Name*:</label>
               <input 
-                  type="text" 
-                  name="firstName" 
-                  value={formData.firstName || ""} 
-                  onChange={handleChange} 
-                  className={readOnly ? "read-only" : ""}
-                  required
+                type="text" 
+                name="firstName" 
+                value={formData.firstName || ""} 
+                onChange={handleChange} 
+                className={readOnly ? "read-only" : ""}
+                required
               />
             </div>
             <div className="input-container">
               <label htmlFor="lastName">Last Name*:</label>
               <input 
-                  type="text" 
-                  name="lastName" 
-                  value={formData.lastName || ""} 
-                  onChange={handleChange} 
-                  className={readOnly ? "read-only" : ""}
-                  required
+                type="text" 
+                name="lastName" 
+                value={formData.lastName || ""} 
+                onChange={handleChange} 
+                className={readOnly ? "read-only" : ""}
+                required
               />
             </div>
           </div>
@@ -152,27 +291,27 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
             <div className="input-container">
               <label htmlFor="undergradYear">Undergraduate Year*:</label>
               <select 
-                  name="undergradYear" 
-                  value={formData.undergradYear || ""} 
-                  onChange={handleChange} 
-                  className={readOnly ? "read-only-select" : ""}
-                  required
+                name="undergradYear" 
+                value={formData.undergradYear || ""} 
+                onChange={handleChange} 
+                className={readOnly ? "read-only-select" : ""}
+                required
               >
-                  <option value="">Select Year</option>
-                  <option value="Freshman">Freshman</option>
-                  <option value="Sophomore">Sophomore</option>
-                  <option value="Junior">Junior</option>
-                  <option value="Senior">Senior</option>
+                <option value="">Select Year</option>
+                <option value="Freshman">Freshman</option>
+                <option value="Sophomore">Sophomore</option>
+                <option value="Junior">Junior</option>
+                <option value="Senior">Senior</option>
               </select>
             </div>
             <div className="input-container">
               <label htmlFor="graduation">Expected Graduation*:</label>
               <select 
-                  name="graduation" 
-                  value={formData.graduation || ""} 
-                  onChange={handleChange} 
-                  className={readOnly ? "read-only-select" : ""}
-                  required
+                name="graduation" 
+                value={formData.graduation || ""} 
+                onChange={handleChange} 
+                className={readOnly ? "read-only-select" : ""}
+                required
               >
                 <option value="">Select Year</option>
                 <option value="Fall 2028">Fall 2028</option>
@@ -187,67 +326,25 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
                 <option value="Spring 2024">Spring 2024</option>
               </select>
             </div>
-            {/* 
             <div className="input-container">
               <label htmlFor="major">Major*:</label>
               <select 
-                  name="major" 
-                  value={formData.major || ""} 
-                  onChange={handleChange} 
-                  className={readOnly ? "read-only-select" : ""}
-                  required
+                name="major" 
+                value={formData.major || ""} 
+                onChange={handleChange} 
+                className={readOnly ? "read-only-select" : ""}
+                required
               >
                 <option value="">Select Major</option>
-                <option value="ACTSCI">Actuarial Science</option>
-                <option value="UIUX">UI/UX</option>
-                <option value="WEBDEV">Web Development</option>
-                <option value="CS">Computer Science</option> 
+                {organizationConfig[organization].majorOptions.map(option => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
               </select>
             </div>
-            */}
           </div>
-  
-          <label htmlFor="skills">Passed Exams:</label>
-          <div
-            className="exams-grid"
-            style={
-              readOnly ? { height: `${Math.ceil(numExamsPassed / 3) * 35 - 35}px` } : {}
-            }
-          >
-            {readOnly ? (
-              exams.filter(exam => formData.examsPassed[exam.id]).map(exam => (
-                  <div key={exam.id} className="exam-checkbox">
-                    <label>
-                      <input 
-                        type="checkbox" 
-                        name={exam.id} 
-                        checked={formData.examsPassed[exam.id] || false} 
-                        onChange={handleChange} 
-                        readOnly={readOnly}
-                        className={readOnly ? "read-only" : ""}
-                      />
-                      <span className="exam-label">{exam.label}</span>
-                    </label>
-                  </div>
-                ))
-            ) : (
-              exams.map(exam => (
-                <div key={exam.id} className="exam-checkbox">
-                  <label>
-                    <input 
-                      type="checkbox" 
-                      name={exam.id} 
-                      checked={formData.examsPassed[exam.id] || false} 
-                      onChange={handleChange} 
-                      readOnly={readOnly}
-                      className={readOnly ? "read-only" : ""}
-                    />
-                    <span className="exam-label">{exam.label}</span>
-                  </label>
-                </div>
-              ))
-            )}
-          </div>
+          
+          {renderExams()}
+          {renderDataMineFields()}
           <br/>
         </form>
       )}
@@ -255,17 +352,17 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
         readOnly ? (
           formData.resume && formData.resume.filePath ? (
             <div className="resume-viewer">
-            <p>View Resume:</p>
-            <object
-              className="object-pdf"
-              data={`${API_BASE_URL}`+formData.resume.filePath}
-              type="application/pdf"
-              data-zoom="1"
-              aria-label="Resume PDF Viewer"
-            ></object>
+              <p>View Resume:</p>
+              <object
+                className="object-pdf"
+                data={`${API_BASE_URL}${formData.resume.filePath}`}
+                type="application/pdf"
+                data-zoom="1"
+                aria-label="Resume PDF Viewer"
+              ></object>
             </div>
           ) : (
-              <p>No resume uploaded.</p>
+            <p>No resume uploaded.</p>
           )
         ) : (
           <div 

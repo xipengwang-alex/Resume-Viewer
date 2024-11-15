@@ -1,9 +1,19 @@
+/* server/server.js */
+
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config();
+const { organizationConfig, getDbUri } = require('./serverConfig');
+const { getStudentProfileModel } = require('./models/StudentProfileFactory');
+const { processProfileData } = require('./utils/profileHelpers');
+const authMiddleware = require('./middleware/authMiddleware');
+const loginRoutes = require('./routes/loginRoutes');
+const registrationRoutes = require('./routes/registrationRoutes');
+const recruiterProfileSchema = require('./models/RecruiterProfile').schema;
+
 global.secretKey = process.env.JWT_SECRET;
 
 const storage = multer.diskStorage({
@@ -12,45 +22,63 @@ const storage = multer.diskStorage({
     cb(null, resumesDir);
   },
   filename: function(req, file, cb) {
-    cb(null, file.originalname)
+    cb(null, file.originalname);
   }
 });
 
 const upload = multer({ storage: storage });
 
-const uri = process.env.MONGODB_URI;
-
-const authMiddleware = require('./middleware/authMiddleware');
-const loginRoutes = require('./routes/loginRoutes');
-const registrationRoutes = require('./routes/registrationRoutes');
-const StudentProfile = require('./models/StudentProfile');
-const RecruiterProfile = require('./models/RecruiterProfile');
-const User = require('./models/User');
-
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, ssl: true })
-  .then(() => console.log("Mongoose is connected"))
-  .catch(e => console.log("could not connect", e));
-
-
 const app = express();
 
 const corsOptions = {
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.API_BASE_URL 
-    : true,
+  origin:
+    process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : true,
   credentials: true
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use('/login', loginRoutes);
-app.use('/register', registrationRoutes);
-app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
+const connections = {};
 
+const initializeDatabaseConnections = async () => {
+  for (const organization in organizationConfig) {
+    const uri = getDbUri(organization);
+    try {
+      const connection = mongoose.createConnection(uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        ssl: true,
+      });
+      connections[organization] = connection;
+      console.log(`Connected to ${organization} database`);
+    } catch (error) {
+      console.error(`Failed to connect to ${organization} database`, error);
+    }
+  }
+};
 
-app.get('/validateToken', authMiddleware, (req, res) => {
+initializeDatabaseConnections();
 
+app.use('/:organization/*', (req, res, next) => {
+  const organization = req.params.organization;
+  if (!organizationConfig[organization] || !connections[organization]) {
+    return res.status(404).json({ message: 'Invalid organization or no database connection' });
+  }
+
+  req.dbConnection = connections[organization];
+  req.organization = organization; 
+  next();
+});
+
+app.use('/:organization', (req, res, next) => {
+  next();
+});
+
+app.use('/:organization/login', loginRoutes);
+app.use('/:organization/register', registrationRoutes);
+
+app.get('/:organization/validateToken', authMiddleware, (req, res) => {
   res.status(200).json({
     message: 'Token is valid',
     user: {
@@ -60,25 +88,13 @@ app.get('/validateToken', authMiddleware, (req, res) => {
   });
 });
 
-
-app.get('/student-profiles', authMiddleware, async (req, res) => {
+app.get('/:organization/recruiter-profile', authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== 'recruiter') {
       return res.status(403).json({ message: 'Access denied' });
     }
-    const profiles = await StudentProfile.find({ isHidden: false });
-    res.json(profiles);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 
-app.get('/recruiter-profile', authMiddleware, async (req, res) => {
-  try {
-    if (req.user.role !== 'recruiter') {
-      return res.status(403).json({ message: 'Access denied' });
-    }
+    const RecruiterProfile = req.dbConnection.model('RecruiterProfile', recruiterProfileSchema);
 
     const profile = await RecruiterProfile.findOne({ user: req.user.id });
     if (!profile) {
@@ -91,27 +107,42 @@ app.get('/recruiter-profile', authMiddleware, async (req, res) => {
   }
 });
 
-app.get('/myprofile', authMiddleware, async (req, res) => {
+app.get('/:organization/student-profiles', authMiddleware, async (req, res) => {
   try {
-    if (req.user.role == 'recruiter') {
+    if (req.user.role !== 'recruiter') {
       return res.status(403).json({ message: 'Access denied' });
     }
-
-    const profile = await StudentProfile.findOne({ user: req.user.id }); 
-    if (!profile) {
-        return res.status(404).json({ message: 'Profile not found' });
-    }
-    res.json(profile);
+    const StudentProfile = getStudentProfileModel(req.organization, req.dbConnection);
+    const profiles = await StudentProfile.find({ isHidden: false });
+    console.log(`Retrieved ${profiles.length} profiles from ${req.organization} database`);
+    res.json(profiles);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching student profiles:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
+app.get('/:organization/myprofile', authMiddleware, async (req, res) => {
+  try {
+    if (req.user.role === 'recruiter') {
+      return res.status(403).json({ message: 'Access denied' });
+    }
 
+    console.log(`Looking for profile in ${req.organization} database for user ${req.user.id}`);
+    const StudentProfile = getStudentProfileModel(req.organization, req.dbConnection);
+    const profile = await StudentProfile.findOne({ user: req.user.id });
+    if (!profile) {
+      console.log('No profile found');
+      return res.status(404).json({ message: 'Profile not found' });
+    }
+    res.json(profile);
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
-
-app.put('/myprofile', authMiddleware, async (req, res) => {
+app.put('/:organization/myprofile', authMiddleware, async (req, res) => {
   try {
     const { isHidden } = req.body;
     const user = req.user;
@@ -120,6 +151,7 @@ app.put('/myprofile', authMiddleware, async (req, res) => {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
+    const StudentProfile = getStudentProfileModel(req.organization, req.dbConnection);
     const profile = await StudentProfile.findOneAndUpdate(
       { user: user.id },
       { isHidden },
@@ -137,97 +169,52 @@ app.put('/myprofile', authMiddleware, async (req, res) => {
   }
 });
 
-    
-app.post('/student-profiles', authMiddleware, upload.single('resume'), async (req, res) => {
-  try {
-    console.log('Request Body:', req.body);
-
-    const { 
-      examsPassed, 
-      firstName, 
-      lastName, 
-      gpa, 
-      graduation, 
-      major,
-      undergradYear, 
-      willNeedSponsorship, 
-      //sponsorshipTimeframe, 
-      opportunityType, 
-      pastInternships 
-    } = req.body;
-
-    const parsedExamsPassed = examsPassed ? JSON.parse(examsPassed) : {};
-    const resume = req.file;
-    const user = req.user;
-
-    if (!user) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-
-    const existingProfile = await StudentProfile.findOne({ user: user.id });
-
-    if (existingProfile) {
-      existingProfile.firstName = firstName;
-      existingProfile.lastName = lastName;
-      existingProfile.gpa = gpa;
-      existingProfile.undergradYear = undergradYear;
-      existingProfile.graduation = graduation;
-      existingProfile.major = major;
-      existingProfile.willNeedSponsorship = willNeedSponsorship;
-      //existingProfile.sponsorshipTimeframe = sponsorshipTimeframe;
-      existingProfile.opportunityType = opportunityType;
-      existingProfile.pastInternships = pastInternships;
-      existingProfile.examsPassed = parsedExamsPassed;
-      
-      if (resume) {
-        existingProfile.resume = {
-          filePath: `/resumes/${resume.originalname}`,
-        };
+app.post(
+  '/:organization/student-profiles',
+  authMiddleware,
+  upload.single('resume'),
+  async (req, res) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({ message: 'Unauthorized' });
       }
 
-      await existingProfile.save();
-      res.json({ message: 'Profile updated successfully' });
-    } else {
+      const StudentProfile = getStudentProfileModel(req.organization, req.dbConnection);
+      const profileData = processProfileData(req.organization, req.body, req.file);
+      profileData.user = user.id;
 
-      const newProfile = new StudentProfile({
-        user: user.id,
-        firstName,
-        lastName,
-        isHidden: false,
-        gpa,
-        undergradYear,
-        graduation,
-        major,
-        willNeedSponsorship,
-        //sponsorshipTimeframe, 
-        opportunityType,
-        pastInternships,
-        examsPassed: parsedExamsPassed,
-        resume: {
-          filePath: `/resumes/${resume.originalname}`,
-        },
-      });
+      const existingProfile = await StudentProfile.findOne({ user: user.id });
 
-      await newProfile.save();
-      res.json({ message: 'Profile created successfully' });
+      if (existingProfile) {
+        Object.assign(existingProfile, profileData);
+        await existingProfile.save();
+        res.json({ message: 'Profile updated successfully' });
+      } else {
+        const newProfile = new StudentProfile(profileData);
+        await newProfile.save();
+        res.json({ message: 'Profile created successfully' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
   }
-});
+);
 
-
+app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
-
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
   });
-} 
+}
 
-
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 app.listen(3000, '0.0.0.0', () => {
   console.log(`Server is running on ${process.env.API_BASE_URL}`);

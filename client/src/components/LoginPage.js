@@ -1,8 +1,9 @@
-// LoginPage.js
+/* client/src/components/LoginPage.js */
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { AUTH_BASE_URL, getCurrentOrganization } from '../config';
 
 function LoginPage() {
   const navigate = useNavigate(); 
@@ -10,6 +11,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const organization = getCurrentOrganization();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -19,17 +21,21 @@ function LoginPage() {
     setPassword(e.target.value);
   };
 
+  const handleRegistrationRedirect = () => {
+    navigate(`/${organization}/register`);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const response = await axios.post(`${API_BASE_URL}/login`, { username, password });
+      const response = await axios.post(`${AUTH_BASE_URL}/${organization}/login`, { username, password });
       localStorage.setItem('token', response.data.token);
       console.log('Token stored:', localStorage.getItem('token'));
       console.log('LoginPage response:', response.data.message);
 
-      navigate('/', { replace: true });
+      navigate(`/${organization}`, { replace: true });
       window.location.reload();
     } catch (error) {
       console.error('Login failed:', error);
@@ -65,7 +71,13 @@ function LoginPage() {
             />
           </div>
           <button type="submit" disabled={loading}>Login</button>
-          <button type="button" onClick={() => navigate('/register')} disabled={loading}>Register New Student</button>
+          <button 
+            type="button" 
+            onClick={handleRegistrationRedirect} 
+            disabled={loading}
+          >
+            Register New Student
+          </button>
         </form>
       )}
       {error && <p className="error-message">{error}</p>}

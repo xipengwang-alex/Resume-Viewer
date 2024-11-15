@@ -1,9 +1,11 @@
+/* client/src/components/EditProfilePage.js */
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Setup2 from './Setup2';
 import Setup3 from './Setup3';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, getCurrentOrganization } from '../config';
 
 function EditProfilePageWithAuth() {
   const navigate = useNavigate(); 
@@ -11,6 +13,7 @@ function EditProfilePageWithAuth() {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const organization = getCurrentOrganization();
 
   
   useEffect(() => {
@@ -47,7 +50,7 @@ function EditProfilePageWithAuth() {
   };
 
   const handleCancel = () => {
-    navigate('/landing');
+    navigate(`/${organization}/landing`);
   };
 
   const handleSave = async () => {
@@ -80,7 +83,7 @@ function EditProfilePageWithAuth() {
       });
 
       console.log(response.data.message);
-      navigate('/landing', { state: { showSuccess: true } });
+      navigate(`/${organization}/landing`, { state: { showSuccess: true } });
     } catch (error) {
       console.error(error);
       setError('Failed to save profile. Please try again.');

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import '../styles.css';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, getCurrentOrganization } from '../config';
 
 function StudentProfileList() {
   const [allResumes, setAllResumes] = useState([]);
@@ -23,6 +23,7 @@ function StudentProfileList() {
   const navigate = useNavigate();
   const location = useLocation();
   const shouldRestoreScroll = useRef(true);
+  const organization = getCurrentOrganization();
 
   const resetFilters = useCallback(() => {
     const defaultFilters = {
@@ -164,7 +165,7 @@ function StudentProfileList() {
 
   const openStudentProfile = (studentProfile) => {
     localStorage.setItem('resumeListScrollPosition', window.scrollY.toString());
-    navigate('/student-profile', { 
+    navigate(`/${organization}/student-profile`, { 
       state: { 
         studentProfile,
         filters: filters
@@ -216,6 +217,7 @@ function StudentProfileList() {
   return (
     <div>
       <div className="filters-container">
+
         <div className="filters-line">
           <input
             type="text"
@@ -254,16 +256,20 @@ function StudentProfileList() {
             style={{ width: '150px' }}
           />
           */}
-          <input
-            type="number"
-            name="examsPassedFilter"
-            placeholder="Exams"
-            value={filters.examsPassedFilter}
-            onChange={handleFilterChange}
-            min="0"
-            max="16"
-            className="half-width"
-          />
+
+          {organization === 'actuarial_science' && (
+            <input
+              type="number"
+              name="examsPassedFilter"
+              placeholder="Exams"
+              value={filters.examsPassedFilter}
+              onChange={handleFilterChange}
+              min="0"
+              max="16"
+              className="half-width"
+            />
+          )}
+
           <input
             type="number"
             name="gpaFilter"
@@ -297,7 +303,9 @@ function StudentProfileList() {
         <div className="sorting-line">
           <select name="sortBy" value={filters.sortBy} onChange={handleFilterChange}>
             <option value="graduationYear">Sort by Graduation Year</option>
-            <option value="examsPassed">Sort by Exams Passed</option>
+            {organization === 'actuarial_science' && (
+              <option value="examsPassed">Sort by Exams Passed</option>
+            )}
             <option value="gpa">Sort by GPA</option>
             <option value="lastName">Sort by Last Name</option>
             <option value="uploadedAt">Sort by Upload Date</option>
@@ -312,12 +320,12 @@ function StudentProfileList() {
       <div className="table-container">
         <table className="table">
           <colgroup>
-            <col style={{ width: '25%' }} /> {/* Name */}
-            <col style={{ width: '15%' }} /> {/* Undergrad Year */}
-            <col style={{ width: '15%' }} /> {/* Expected Graduation */}
-            <col style={{ width: '10%' }} /> {/* Exams Passed */}
-            <col style={{ width: '10%' }} /> {/* GPA */}
-            <col style={{ width: '30%' }} /> {/* Actions */}
+            <col style={{ width: '25%' }} />{/* Name */}
+            <col style={{ width: '15%' }} />{/* Undergrad Year */}
+            <col style={{ width: '15%' }} />{/* Expected Graduation */}
+            {organization === 'actuarial_science' && <col style={{ width: '10%' }} />}{/* Exams Passed */}
+            <col style={{ width: '10%' }} />{/* GPA */}
+            <col style={{ width: '30%' }} />{/* Actions */}
           </colgroup>
           <thead>
             <tr>
@@ -325,7 +333,7 @@ function StudentProfileList() {
               {/*<th>Major</th>*/}
               <th>Undergrad Year</th>
               <th>Expected Graduation</th>
-              <th>Exams Passed</th>
+              {organization === 'actuarial_science' && <th>Exams Passed</th>}
               <th>GPA</th>
               <th>Actions</th>
             </tr>
@@ -336,7 +344,7 @@ function StudentProfileList() {
               <td>{`${resume.firstName} ${resume.lastName}`}</td>
               <td>{resume.undergradYear || 'N/A'}</td>
               <td>{resume.graduation || 'N/A'}</td>
-              <td>{countExamsPassed(resume.examsPassed)}</td>
+              {organization === 'actuarial_science' && <td>{countExamsPassed(resume.examsPassed)}</td>}
               <td>{resume.gpa || 'N/A'}</td>
               <td>
                 <div className="action-buttons">
