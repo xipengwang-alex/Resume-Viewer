@@ -23,26 +23,26 @@ function StudentProfilePage() {
   };
 
   return (
-    <div className="student-profile-page">
+    <div className="edit-profile-page">
       {studentProfile ? (
         <>
           <Setup2
             formData={studentProfile}
             header={0}
-            className="student-profile-page-content"
+            className="edit-profile-page-content"
             readOnly={true}
             showResumeView={false}
           />
           <Setup3
             formData={studentProfile}
             header={0}
-            className="student-profile-page-content"
+            className="edit-profile-page-content"
             readOnly={true}
           />
           <Setup2
             formData={studentProfile}
             header={0}
-            className="student-profile-page-content"
+            className="edit-profile-page-content"
             readOnly={true}
             showPersonalInfo={false}
           />

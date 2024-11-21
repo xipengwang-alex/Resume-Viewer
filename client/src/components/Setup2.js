@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import SetupHeader from './SetupHeader';
-import { API_BASE_URL, organizationConfig, getCurrentOrganization } from '../config';
+import { BASE_URL, organizationConfig, getCurrentOrganization } from '../config';
 
 function Setup2({ formData, setFormData, header = 1, handleFileChange, file, readOnly = false, className, onValidityChange, showResumeView = true, showPersonalInfo = true }) {
   const organization = getCurrentOrganization();
@@ -355,7 +355,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
               <p>View Resume:</p>
               <object
                 className="object-pdf"
-                data={`${API_BASE_URL}${formData.resume.filePath}`}
+                data={`${BASE_URL}${formData.resume.filePath}`}
                 type="application/pdf"
                 data-zoom="1"
                 aria-label="Resume PDF Viewer"

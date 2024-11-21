@@ -49,5 +49,10 @@ export const API_BASE_URL = process.env.NODE_ENV === 'production'
   ? `https://resumes.the-examples-book.com/${getOrganization()}`
   : `http://localhost:3000/${getOrganization()}`;
 
+// Base URL
+export const BASE_URL = process.env.NODE_ENV === 'production'
+  ? 'https://resumes.the-examples-book.com'
+  : 'http://localhost:3000';
+
   
   export const getCurrentOrganization = () => getOrganization();
