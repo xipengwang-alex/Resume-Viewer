@@ -241,11 +241,12 @@ function StudentProfileList() {
             value={filters.undergradYearFilter}
             onChange={handleFilterChange}
           >
-            <option value="">School Year</option>
+            <option value="">Year of Study</option>
             <option value="Freshman">Freshman</option>
             <option value="Sophomore">Sophomore</option>
             <option value="Junior">Junior</option>
             <option value="Senior">Senior</option>
+            <option value="Graduate">Graduate</option>
           </select>
           {/*
           <input
@@ -321,7 +322,7 @@ function StudentProfileList() {
         <table className="table">
           <colgroup>
             <col style={{ width: '25%' }} />{/* Name */}
-            <col style={{ width: '15%' }} />{/* Undergrad Year */}
+            <col style={{ width: '20%' }} />{/* Year of Study */}
             <col style={{ width: '15%' }} />{/* Expected Graduation */}
             {organization === 'actuarial_science' && <col style={{ width: '10%' }} />}{/* Exams Passed */}
             <col style={{ width: '10%' }} />{/* GPA */}
@@ -331,7 +332,7 @@ function StudentProfileList() {
             <tr>
               <th>Name</th>
               {/*<th>Major</th>*/}
-              <th>Undergrad Year</th>
+              <th>Year of Study</th>
               <th>Expected Graduation</th>
               {organization === 'actuarial_science' && <th>Exams Passed</th>}
               <th>GPA</th>

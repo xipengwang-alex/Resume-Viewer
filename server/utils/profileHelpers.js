@@ -30,7 +30,10 @@ const processProfileData = (organization, bodyData, file) => {
       return {
         ...baseData,
         skills: bodyData.skills ? JSON.parse(bodyData.skills) : [],
-        projects: bodyData.projects ? JSON.parse(bodyData.projects) : []
+        projects: bodyData.projects ? JSON.parse(bodyData.projects) : [],
+        linkedInUrl: bodyData.linkedInUrl,
+        nonPurdueEmail: bodyData.nonPurdueEmail,
+        phoneNumber: bodyData.phoneNumber
       };
     default:
       return baseData;

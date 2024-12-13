@@ -8,7 +8,6 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
   const organization = getCurrentOrganization();
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
-  //const [skillsInput, setSkillsInput] = useState('');
 
 
   useEffect(() => {
@@ -29,12 +28,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
         major: organizationConfig[organization].majorOptions[0]
       }));
     }
-    /*
-    if (formData.skills) {
-      setSkillsInput(formData.skills.join(', '));
-    }
-    */
-  }, [file, formData, selectedFile, onValidityChange, setFormData, organization, formData.skills]);
+  }, [file, formData, selectedFile, onValidityChange, setFormData, organization]);
 
   const handleChange = (e) => {
     if (!readOnly) {
@@ -56,62 +50,6 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
     }
   };
 
-  /*
-  const handleSkillsInputChange = (e) => {
-    if (!readOnly) {
-      setSkillsInput(e.target.value);
-    }
-  };
-
-  const handleSkillsInputBlur = () => {
-    if (!readOnly) {
-      const skillsArray = skillsInput.split(',').map(s => s.trim()).filter(s => s);
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        skills: skillsArray
-      }));
-    }
-  };
-
-  const handleProjectChange = (index, field, value) => {
-    if (!readOnly && organization === 'data_mine') {
-      const newProjects = [...(formData.projects || [])];
-      if (field === 'technologiesUsed') {
-        newProjects[index] = {
-          ...newProjects[index],
-          [field]: value.split(',').map(t => t.trim()).filter(t => t)
-        };
-      } else {
-        newProjects[index] = {
-          ...newProjects[index],
-          [field]: value
-        };
-      }
-      setFormData({ ...formData, projects: newProjects });
-    }
-  };
-
-  const addProject = () => {
-    if (!readOnly && organization === 'data_mine') {
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        projects: [
-          ...(prevFormData.projects || []),
-          { name: '', description: '', technologiesUsed: [] }
-        ]
-      }));
-    }
-  };
-
-  const removeProject = (index) => {
-    if (!readOnly && organization === 'data_mine') {
-      setFormData(prevFormData => ({
-        ...prevFormData,
-        projects: prevFormData.projects.filter((_, i) => i !== index)
-      }));
-    }
-  };
- */
   const handleDrag = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -199,63 +137,42 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
 
   const renderDataMineFields = () => {
     if (organization !== 'data_mine') return null;
-    /* 
     return (
       <>
-        <div className="input-container">
-          <label htmlFor="skills">Skills (comma-separated):</label>
-          <input
-            type="text"
-            name="skills"
-            value={skillsInput}
-            onChange={handleSkillsInputChange}
-            onBlur={handleSkillsInputBlur}
-            readOnly={readOnly}
-            className={readOnly ? "read-only" : ""}
-          />
+        <div className="input-group">
+          <div className="input-container">
+            <label htmlFor="linkedInUrl">LinkedIn URL:</label>
+            <input 
+              type="text" 
+              name="linkedInUrl" 
+              value={formData.linkedInUrl || ""} 
+              onChange={handleChange} 
+              className={readOnly ? "read-only" : ""}
+            />
+          </div>
+          <div className="input-container">
+            <label htmlFor="nonPurdueEmail">Non-Purdue Email:</label>
+            <input 
+              type="text" 
+              name="nonPurdueEmail" 
+              value={formData.nonPurdueEmail || ""} 
+              onChange={handleChange}
+              className={readOnly ? "read-only" : ""}
+            />
+          </div>
+          <div className="input-container">
+            <label htmlFor="phoneNumber">Phone Number:</label>
+            <input 
+              type="text"
+              name="phoneNumber"
+              value={formData.phoneNumber || ""}
+              onChange={handleChange}
+              className={readOnly ? "read-only" : ""}
+            />
+          </div>
         </div>
-        {!readOnly && (
-          <div className="project-section">
-            <label>Projects:</label>
-            {formData.projects?.map((project, index) => (
-              <div key={index} className="project-item">
-                <input
-                  type="text"
-                  placeholder="Project name"
-                  value={project.name}
-                  onChange={(e) => handleProjectChange(index, 'name', e.target.value)}
-                />
-                <textarea
-                  placeholder="Project description"
-                  value={project.description}
-                  onChange={(e) => handleProjectChange(index, 'description', e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Technologies used (comma-separated)"
-                  value={project.technologiesUsed.join(', ')}
-                  onChange={(e) => handleProjectChange(index, 'technologiesUsed', e.target.value)}
-                />
-                <button type="button" onClick={() => removeProject(index)}>Remove Project</button>
-              </div>
-            ))}
-            <button type="button" onClick={addProject}>Add Project</button>
-          </div>
-        )}
-        {readOnly && formData.projects?.length > 0 && (
-          <div className="project-section">
-            <label>Projects:</label>
-            {formData.projects.map((project, index) => (
-              <div key={index} className="project-item-readonly">
-                <h4>{project.name}</h4>
-                <p>{project.description}</p>
-                <p><strong>Technologies:</strong> {project.technologiesUsed.join(', ')}</p>
-              </div>
-            ))}
-          </div>
-        )}
       </>
-    );*/
+    );
   };
 
   return (
@@ -289,7 +206,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
           </div>
           <div className="input-group">
             <div className="input-container">
-              <label htmlFor="undergradYear">Undergraduate Year*:</label>
+              <label htmlFor="undergradYear">Year of Study*:</label>
               <select 
                 name="undergradYear" 
                 value={formData.undergradYear || ""} 
@@ -302,6 +219,7 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
                 <option value="Sophomore">Sophomore</option>
                 <option value="Junior">Junior</option>
                 <option value="Senior">Senior</option>
+                <option value="Graduate">Graduate</option>
               </select>
             </div>
             <div className="input-container">

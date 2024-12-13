@@ -8,7 +8,7 @@ const baseStudentProfileSchema = {
   lastName: { type: String, required: true },
   isHidden: { type: Boolean, default: false },
   gpa: Number,
-  undergradYear: { type: String, enum: ['Freshman', 'Sophomore', 'Junior', 'Senior'] },
+  undergradYear: { type: String, enum: ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Graduate'] },
   graduation: String,
   major: String,
   willNeedSponsorship: String,
@@ -47,7 +47,10 @@ const dataMineSchema = {
     name: String,
     description: String,
     technologiesUsed: [String]
-  }]
+  }],
+  linkedInUrl: { type: String },
+  nonPurdueEmail: { type: String },
+  phoneNumber: { type: String },
 };
 
 module.exports = {
