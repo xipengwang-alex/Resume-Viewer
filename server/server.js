@@ -31,15 +31,12 @@ const upload = multer({ storage: storage });
 const app = express();
 
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : true,
+  origin: 'https://resumes.the-examples-book.com',
   credentials: true
 };
 
-if (process.env.NODE_ENV === 'production') {
-  app.use('/data_mine', express.static(path.join(__dirname, '../client/build')));
-}
 
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -219,8 +216,15 @@ app.post(
 app.use('/resumes', express.static(path.join(__dirname, 'resumes')));
 
 if (process.env.NODE_ENV === 'production') {
-  app.get('/data_mine/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+  app.use('/:organization', express.static(path.join(__dirname, '../client/build')));
+
+  app.get('/:organization/*', (req, res) => {
+    const org = req.params.organization;
+    if (organizationConfig[org]) {
+      res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    } else {
+      res.status(404).send('Organization not found');
+    }
   });
 }
 
