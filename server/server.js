@@ -62,7 +62,7 @@ const initializeDatabaseConnections = async () => {
 initializeDatabaseConnections();
 
 app.get('/', (req, res) => {
-  res.redirect('/actuarial_science');
+  res.redirect('/data_mine');
 });
 
 const apiPaths = [
