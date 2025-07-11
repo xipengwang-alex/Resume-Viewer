@@ -12,6 +12,7 @@ const { processProfileData } = require('./utils/profileHelpers');
 const authMiddleware = require('./middleware/authMiddleware');
 const loginRoutes = require('./routes/loginRoutes');
 const registrationRoutes = require('./routes/registrationRoutes');
+const exportRoutes = require('./routes/exportRoutes');
 const recruiterProfileSchema = require('./models/RecruiterProfile').schema;
 
 global.secretKey = process.env.JWT_SECRET;
@@ -31,7 +32,8 @@ const upload = multer({ storage: storage });
 const app = express();
 
 const corsOptions = {
-  origin: 'https://resumes.the-examples-book.com',
+  origin:
+    process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : true,
   credentials: true
 };
 
@@ -71,7 +73,8 @@ const apiPaths = [
   '/validateToken',
   '/myprofile',
   '/student-profiles',
-  '/recruiter-profile'
+  '/recruiter-profile',
+  '/export'
 ];
 
 apiPaths.forEach((apiPath) => {
@@ -88,6 +91,7 @@ apiPaths.forEach((apiPath) => {
 
 app.use('/:organization/login', loginRoutes);
 app.use('/:organization/register', registrationRoutes);
+app.use('/:organization/export', exportRoutes);
 
 app.get('/:organization/validateToken', authMiddleware, (req, res) => {
   res.status(200).json({

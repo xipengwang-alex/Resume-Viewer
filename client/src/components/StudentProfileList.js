@@ -144,7 +144,6 @@ function StudentProfileList() {
         });
       }
     
-
       // Apply sorting
       result = sortResumes(result);
 
@@ -211,6 +210,29 @@ function StudentProfileList() {
     }
   };
 
+  const handleExcelDownload = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios({
+        url: `${API_BASE_URL}/export/excel`,
+        method: 'GET',
+        responseType: 'blob',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `student_profiles_${organization}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading Excel file:', error);
+      alert('Failed to download Excel file. Please try again.');
+    }
+  };
+
   if (loading) return <div>Loading profiles...</div>;
   if (error) return <div>{error}</div>;
   
@@ -227,15 +249,6 @@ function StudentProfileList() {
             onChange={handleFilterChange}
             style={{ width: '100px' }}
           />
-          {/*
-          <input
-            type="text"
-            placeholder="Major"
-            value={majorFilter}
-            onChange={(e) => setMajorFilter(e.target.value)}
-            style={{ width: '150px' }}
-          />
-          */}
           <select
             name="undergradYearFilter"
             value={filters.undergradYearFilter}
@@ -248,15 +261,6 @@ function StudentProfileList() {
             <option value="Senior">Senior</option>
             <option value="Graduate">Graduate</option>
           </select>
-          {/*
-          <input
-            type="text"
-            placeholder="Graduation Term"
-            value={graduationYearFilter}
-            onChange={(e) => setGraduationYearFilter(e.target.value)}
-            style={{ width: '150px' }}
-          />
-          */}
 
           {organization === 'actuarial_science' && (
             <input
@@ -316,6 +320,12 @@ function StudentProfileList() {
             <option value="desc">Descending</option>
           </select>
           <button onClick={resetFilters}>Clear</button>
+          
+          {organization === 'actuarial_science' && (
+            <button onClick={handleExcelDownload} style={{ marginLeft: '10px' }}>
+              Download as Excel
+            </button>
+          )}
         </div>
       </div>
       <div className="table-container">
@@ -331,7 +341,6 @@ function StudentProfileList() {
           <thead>
             <tr>
               <th>Name</th>
-              {/*<th>Major</th>*/}
               <th>Year of Study</th>
               <th>Expected Graduation</th>
               {organization === 'actuarial_science' && <th>Exams Passed</th>}
