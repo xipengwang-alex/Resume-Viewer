@@ -232,6 +232,10 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
                 required
               >
                 <option value="">Select Year</option>
+                <option value="Fall 2030">Fall 2030</option>
+                <option value="Spring 2030">Spring 2030</option>
+                <option value="Fall 2029">Fall 2029</option>
+                <option value="Spring 2029">Spring 2029</option>
                 <option value="Fall 2028">Fall 2028</option>
                 <option value="Spring 2028">Spring 2028</option>
                 <option value="Fall 2027">Fall 2027</option>
