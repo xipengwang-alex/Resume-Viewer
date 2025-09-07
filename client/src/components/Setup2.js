@@ -243,9 +243,6 @@ function Setup2({ formData, setFormData, header = 1, handleFileChange, file, rea
                 <option value="Fall 2026">Fall 2026</option>
                 <option value="Spring 2026">Spring 2026</option>
                 <option value="Fall 2025">Fall 2025</option>
-                <option value="Spring 2025">Spring 2025</option>
-                <option value="Fall 2024">Fall 2024</option>
-                <option value="Spring 2024">Spring 2024</option>
               </select>
             </div>
             <div className="input-container">
